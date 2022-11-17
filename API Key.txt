@@ -1,0 +1,4 @@
+AIzaSyBvwCCz1yzZYWAu0rGK8lhrTgJhnZuPeAE
+
+<meta-data android:name="com.google.android.geo.API_KEY"
+	     android:value="AIzaSyBvwCCz1yzZYWAu0rGK8lhrTgJhnZuPeAE"/>
