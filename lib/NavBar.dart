@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sat_tracker/screens/form_screen.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -35,7 +36,13 @@ class NavBar extends StatelessWidget {
           leading: const Icon(Icons.map_sharp),
           title: const Text('Map View'),
           // ignore: avoid_returning_null_for_void
-          onTap: () => null,
+          onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const FormScreen()),
+            );
+          },
         ),
         ListTile(
           leading: const Icon(Icons.description_rounded),
