@@ -1,9 +1,3 @@
-/*
-    @author Marlvin Chihota
-    Email marlvinchihota@gmail.com
-    Created on 20/11/2022
-*/
-
 import 'package:flutter/material.dart';
 import 'package:sat_tracker/widgets/form_results_widgets.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
