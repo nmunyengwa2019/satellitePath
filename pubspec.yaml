@@ -38,8 +38,8 @@ dependencies:
   sgp4_sdp4: ^0.1.0
   orbit: ^0.0.2
   retrofit: any
-  dio: ^4.0.6
   json_annotation: any
+  http: ^0.13.5
 
 
 dev_dependencies:

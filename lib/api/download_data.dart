@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 //import 'package:sat_tracker/widgets/form_widgets.dart';
-import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 
 class DownloadDataScreen extends StatelessWidget {
   const DownloadDataScreen({Key? key}) : super(key: key);
@@ -42,12 +42,25 @@ class DownloadDataScreen extends StatelessWidget {
 
 void getHTTP() async
 {
-  try
-  {
-    var response = await Dio().get("https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID,EPOCH/format/3le");
-    print(response);
-  } catch(e)
-  {
-    print(e);
+  var headers = {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Cookie': 'chocolatechip=u3tifs0tm1c299t2t82es58d5eus33e4'
+  };
+  var request = http.Request('POST', Uri.parse('https://www.space-track.org/ajaxauth/login'));
+  request.bodyFields = {
+    'identity': 'poso.draxy@gmail.com',
+    'password': '9kj39-Btb8xUB58',
+    'query': 'https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID,EPOCH/format/json'
+  };
+  request.headers.addAll(headers);
+
+  http.StreamedResponse response = await request.send();
+
+  if (response.statusCode == 200) {
+    print(await response.stream.bytesToString());
   }
+  else {
+    print(response.reasonPhrase);
+  }
+
 }
