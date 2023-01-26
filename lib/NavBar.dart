@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sat_tracker/screens/form_screen.dart';
+import 'package:sat_tracker/api/download_data.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -48,7 +49,13 @@ class NavBar extends StatelessWidget {
           leading: const Icon(Icons.description_rounded),
           title: const Text('3D View'),
           // ignore: avoid_returning_null_for_void
-          onTap: () => null,
+          onTap: (){
+            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DownloadDataScreen()),
+            );
+          },
         ),
         const Divider(),
         ListTile(
