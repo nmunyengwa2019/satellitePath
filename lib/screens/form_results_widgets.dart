@@ -23,25 +23,20 @@ class FormResultsScreen extends StatefulWidget {
 class _FormResultsScreenState extends State<FormResultsScreen> {
   @override
   Widget build(BuildContext context) {
-    final TLE tleSGP4 =
-        TLE(widget.name.text, widget.lineOne.text, widget.lineTwo.text);
+    final TLE tleSGP4 = TLE(widget.name.text, widget.lineOne.text, widget.lineTwo.text);
     final Orbit orbit = Orbit(tleSGP4);
     bool status = orbit.period() < 255 * 60;
 
     final dateTime = DateTime.now();
     final double utcTime = Julian.fromFullDate(dateTime.year, dateTime.month,
-                dateTime.day, dateTime.hour, dateTime.minute)
-            .getDate() +
-        4 / 24.0;
-    final Eci eciPos =
-        orbit.getPosition((utcTime - orbit.epoch().getDate()) * MIN_PER_DAY);
+                dateTime.day, dateTime.hour, dateTime.minute).getDate() + 4 / 24.0;
+    final Eci eciPos = orbit.getPosition((utcTime - orbit.epoch().getDate()) * MIN_PER_DAY);
 
     final CoordGeo coord = eciPos.toGeo();
     if (coord.lon > PI) coord.lon -= TWOPI;
 
     // todo : change hardcoded value
-    final Site myLocation =
-        Site.fromLatLngAlt(23.1359405517578, -82.3583297729492, 59 / 1000.0);
+    final Site myLocation = Site.fromLatLngAlt(23.1359405517578, -82.3583297729492, 59 / 1000.0);
 
     CoordTopo topo = myLocation.getLookAngle(eciPos);
 

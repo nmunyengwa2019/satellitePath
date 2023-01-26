@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sat_tracker/widgets/form_widgets.dart';
+//import 'package:sat_tracker/widgets/form_widgets.dart';
 import 'package:dio/dio.dart';
-
 
 class DownloadDataScreen extends StatelessWidget {
   const DownloadDataScreen({Key? key}) : super(key: key);
@@ -29,24 +28,23 @@ class DownloadDataScreen extends StatelessWidget {
                     margin: const EdgeInsets.only(left: 20, right: 20),
                     child: ListView(
                       children: [
-                        Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: const NameField()),
-                        Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: SubmitBtn(formKey: formKey))
+                        ElevatedButton(
+                            onPressed: (){
+                              getHTTP();
+                            },
+                            child: const Text("Download Data",
+                            style: TextStyle(color: Colors.white)),
+                        ),
                       ],
                     )))));
   }
 }
 
-
-
 void getHTTP() async
 {
   try
   {
-    var response = await Dio().get("");
+    var response = await Dio().get("https://www.space-track.org/basicspacedata/query/class/gp/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID,EPOCH/format/3le");
     print(response);
   } catch(e)
   {

@@ -37,7 +37,9 @@ dependencies:
   google_maps_flutter: ^2.1.8
   sgp4_sdp4: ^0.1.0
   orbit: ^0.0.2
+  retrofit: any
   dio: ^4.0.6
+  json_annotation: any
 
 
 dev_dependencies:

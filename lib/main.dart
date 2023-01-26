@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sat_tracker/NavBar.dart';
@@ -80,15 +79,15 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         },
         markers: markers.toSet(),
-        onTap: (cordinate){
-          _controller.animateCamera(cameraUpdate.newLatLng(cordinate));
+        onTap: (coordinate){
+          _controller.animateCamera(cameraUpdate.newLatLng(coordinate));
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
           _controller.animateCamera(cameraUpdate.zoomOut());
         },
-        child: Icon(Icons.zoom_out),
+        child: const Icon(Icons.zoom_out),
       ),
       drawer: const NavBar(),
       appBar: AppBar(
