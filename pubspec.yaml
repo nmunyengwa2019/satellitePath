@@ -40,6 +40,8 @@ dependencies:
   retrofit: any
   json_annotation: any
   http: ^0.13.5
+  flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
 
 
 dev_dependencies:
