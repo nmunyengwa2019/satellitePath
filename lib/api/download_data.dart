@@ -3,45 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:sat_tracker/model/satellite_model.dart';
 
-class DownloadDataScreen extends StatelessWidget {
-  const DownloadDataScreen({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          backgroundColor: Colors.lightBlue,
-          centerTitle: true,
-          title: const Text('Data Download',
-              style: TextStyle(color: Colors.white)),
-        ),
-        body: Container(
-            margin: const EdgeInsets.all(15),
-            child: Form(
-                key: formKey,
-                child: Container(
-                    margin: const EdgeInsets.only(left: 20, right: 20),
-                    child: ListView(
-                      children: [
-                        ElevatedButton(
-                            onPressed: (){
-                              getHTTP();
-                            },
-                            child: const Text("Download Data",
-                            style: TextStyle(color: Colors.white)),
-                        ),
-                      ],
-                    )))));
-  }
-}
-
-
 class UserRepository
 {
   var headers = {'Content-Type': 'application/x-www-form-urlencoded',
