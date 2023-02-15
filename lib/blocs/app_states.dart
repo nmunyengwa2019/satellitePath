@@ -1,13 +1,16 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
-@immutable
-abstract class UserState extends Equatable {}
+import '../model/satellite_model.dart';
 
-class UserLoadingState extends  UserState
-{
-  @override
-  // TODO: implement props
-  List<Object?> get props => [];
-  
+
+abstract class UserState {}
+
+class IsLoading extends UserState {}
+
+class Loaded extends UserState {
+  final List<DataModel> data;
+  Loaded({required this.data});
 }
+
+class Error extends UserState {}
+
