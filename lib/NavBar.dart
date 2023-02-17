@@ -45,18 +45,18 @@ class NavBar extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.description_rounded),
-          title: const Text('3D View'),
-          // ignore: avoid_returning_null_for_void
-          onTap: (){
-            Navigator.pop(context);
-            Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const DownloadDataScreen()),
-            );
-          },
-        ),
+        // ListTile(
+        //   leading: const Icon(Icons.description_rounded),
+        //   title: const Text('3D View'),
+        //   // ignore: avoid_returning_null_for_void
+        //   onTap: (){
+        //     Navigator.pop(context);
+        //     Navigator.push(
+        //         context,
+        //         MaterialPageRoute(builder: (context) => const DownloadDataScreen()),
+        //     );
+        //   },
+        // ),
         const Divider(),
         ListTile(
           leading: const Icon(Icons.category_rounded),
