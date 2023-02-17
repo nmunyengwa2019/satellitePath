@@ -4,10 +4,10 @@ import 'package:sat_tracker/blocs/app_events.dart';
 import 'package:sat_tracker/blocs/app_states.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final UserRepository _userRepository;
 
-  UserBloc(this._userRepository) : super(IsLoading()) {
+  UserBloc() : super(IsLoading()) {
     on<LoadUserEvent>((event, emit) async {
+      final UserRepository _userRepository = UserRepository();
       final response = await _userRepository.getSatellites();
       emit(response);
     });

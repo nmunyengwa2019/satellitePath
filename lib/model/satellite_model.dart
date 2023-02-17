@@ -1,7 +1,7 @@
 class DataModel {
   String? cCSDSOMMVERS;
   String? cOMMENT;
-  DateTime? cREATIONDATE;
+  String? cREATIONDATE;
   String? oRIGINATOR;
   String? oBJECTNAME;
   String? oBJECTID;
@@ -9,7 +9,7 @@ class DataModel {
   String? rEFFRAME;
   String? tIMESYSTEM;
   String? mEANELEMENTTHEORY;
-  DateTime? ePOCH;
+  String? ePOCH;
   String? mEANMOTION;
   String? eCCENTRICITY;
   String? iNCLINATION;
@@ -38,6 +38,8 @@ class DataModel {
   String? tLELINE0;
   String? tLELINE1;
   String? tLELINE2;
+
+  DataModel.empty(){}
 
   DataModel(
       {this.cCSDSOMMVERS,

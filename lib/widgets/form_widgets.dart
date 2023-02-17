@@ -105,9 +105,7 @@ class SubmitBtn extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const FormResultsScreen(
-                              // name: name, lineOne: lineOne, lineTwo: lineTwo
-                          )),
+                          builder: (context) => FormResultsScreen(name: name)),
                     );
                   } else {
                     SnackBar snackBar = const SnackBar(

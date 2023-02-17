@@ -30,12 +30,12 @@ class FormScreen extends StatelessWidget {
                         Container(
                             margin: const EdgeInsets.only(top: 30),
                             child: const NameField()),
-                        Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: const LineOneField()),
-                        Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: const LineTwoField()),
+                        // Container(
+                        //     margin: const EdgeInsets.only(top: 30),
+                        //     child: const LineOneField()),
+                        // Container(
+                        //     margin: const EdgeInsets.only(top: 30),
+                        //     child: const LineTwoField()),
                         Container(
                             margin: const EdgeInsets.only(top: 30),
                             child: SubmitBtn(formKey: formKey))
