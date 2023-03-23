@@ -1,6 +1,6 @@
+
 import 'package:flutter/material.dart';
-import 'package:sat_tracker/screens/form_screen.dart';
-import 'package:sat_tracker/api/download_data.dart';
+import 'package:sat_tracker/presentation/screens/form_screen.dart';
 
 class NavBar extends StatelessWidget {
   const NavBar({Key? key}) : super(key: key);

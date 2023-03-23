@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:sat_tracker/blocs/app_states.dart';
-import 'package:sat_tracker/model/satellite_model.dart';
+import 'package:sat_tracker/data/models/satellite_model.dart';
+
+import '../../business_logic/blocs/app_states.dart';
+
 
 class UserRepository {
   Future<UserState> getSatellites() async {
