@@ -68,11 +68,13 @@ class NavBar extends StatelessWidget {
           leading: const Icon(Icons.youtube_searched_for_rounded),
           title: const Text('Search View'),
           // ignore: avoid_returning_null_for_void
-          onTap: () => null,
+          onTap: () {
+//             storeData(); // store data from DataModel to local
+          },
         ),
         ListTile(
           leading: const Icon(Icons.satellite_alt_rounded),
-          title: const Text('Satellite Passes'),
+          title: const Text('Download Data'),
           // ignore: avoid_returning_null_for_void
           onTap: () => null,
         ),

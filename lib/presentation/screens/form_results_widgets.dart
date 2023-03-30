@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 
-
 import '../../business_logic/blocs/app_states.dart';
 import '../../business_logic/blocs/app_blocs.dart';
 import '../../business_logic/blocs/app_events.dart';

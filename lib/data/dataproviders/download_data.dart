@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:sat_tracker/data/models/satellite_model.dart';
-
 import '../../business_logic/blocs/app_states.dart';
-
 
 class UserRepository {
   Future<UserState> getSatellites() async {
@@ -20,11 +18,14 @@ class UserRepository {
       'Cookie': 'chocolatechip=u3tifs0tm1c299t2t82es58d5eus33e4'
     });
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200)
+    {
       final List result = jsonDecode(response.body);
       List<DataModel> results = result.map((e) => DataModel.fromJson(e)).toList();
       return Loaded(data: results);
-    } else {
+    }
+    else
+    {
       return Error();
     }
   }
