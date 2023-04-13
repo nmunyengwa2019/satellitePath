@@ -58,7 +58,8 @@ class _MyHomePageState extends State<MyHomePage>
         ),
         layers: [
           TileLayerOptions(
-            urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png',
+            //urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png',
+            urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
             userAgentPackageName: 'com.example.app',
           ),
           PolylineLayerOptions(
