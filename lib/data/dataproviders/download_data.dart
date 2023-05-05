@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
@@ -45,6 +46,8 @@ class ApiClient {
           var downloadedBytes = 0;
           var chunkSize = 1024;
           //var chunkIndex = 0;
+
+          requestPermissions();
 
           // Save data to local storage
           var directory = await getExternalStorageDirectory();
@@ -135,15 +138,28 @@ class ApiClient {
 
 
     if(response.statusCode == 200){
-      String rawCookie = response.headers['chocolatechip']!;
+      String? rawCookie = response.headers['chocolatechip']!;
       int index = rawCookie.indexOf(';');
       String refreshToken = (index == -1) ? rawCookie : rawCookie.substring(0, index);
       int idx = refreshToken.indexOf("=");
-      return refreshToken.substring(idx+1).trim();
+      String ? token =  refreshToken.substring(idx+1).trim();
+
+      print('\n\n FOUND TOKEN : $token \n\n');
+      print(response.headers.values);
+
+      return token;
     }
     else {
       return null;
     }
 
+  }
+}
+
+
+requestPermissions() async {
+  var status = await Permission.storage.status;
+  if (!status.isGranted) {
+    await Permission.storage.request();
   }
 }
