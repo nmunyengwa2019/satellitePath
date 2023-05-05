@@ -1,16 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sat_tracker/presentation/NavBar.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
- // to save data in the local storage location
-  HydratedBloc.storage = await HydratedStorage.build(storageDirectory: await getApplicationDocumentsDirectory());
+// Allow permissions to save data locally
+  if (!kIsWeb) {
+    await Permission.storage.request();
+  }
+
   runApp(const MyApp());
 }
 
@@ -58,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage>
         ),
         layers: [
           TileLayerOptions(
-            //urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png',
+            //urlTemplate: 'http://maps.stamen.com/m2i/image/20230420/toner-lite_TrS8Uisw4TA',
             urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
             userAgentPackageName: 'com.example.app',
           ),

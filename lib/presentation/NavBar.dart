@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:sat_tracker/presentation/screens/downloadData.dart';
 import 'package:sat_tracker/presentation/screens/form_screen.dart';
 
 class NavBar extends StatelessWidget {
@@ -45,18 +46,7 @@ class NavBar extends StatelessWidget {
             );
           },
         ),
-        // ListTile(
-        //   leading: const Icon(Icons.description_rounded),
-        //   title: const Text('3D View'),
-        //   // ignore: avoid_returning_null_for_void
-        //   onTap: (){
-        //     Navigator.pop(context);
-        //     Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => const DownloadDataScreen()),
-        //     );
-        //   },
-        // ),
+
         const Divider(),
         ListTile(
           leading: const Icon(Icons.category_rounded),
@@ -76,7 +66,13 @@ class NavBar extends StatelessWidget {
           leading: const Icon(Icons.satellite_alt_rounded),
           title: const Text('Download Data'),
           // ignore: avoid_returning_null_for_void
-          onTap: () => null,
+          onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DownloadScreen()),
+              );
+            },
         ),
         const Divider(),
         ListTile(

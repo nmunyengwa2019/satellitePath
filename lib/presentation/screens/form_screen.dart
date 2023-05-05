@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sat_tracker/presentation/widgets/form_widgets.dart';
 
 class FormScreen extends StatelessWidget {
   const FormScreen({Key? key}) : super(key: key);
@@ -29,17 +28,13 @@ class FormScreen extends StatelessWidget {
                       children: [
                         Container(
                             margin: const EdgeInsets.only(top: 30),
-                            child: const NameField()),
+                            child: null,//const NameField()),
                         // Container(
                         //     margin: const EdgeInsets.only(top: 30),
                         //     child: const LineOneField()),
                         // Container(
                         //     margin: const EdgeInsets.only(top: 30),
                         //     child: const LineTwoField()),
-                        Container(
-                            margin: const EdgeInsets.only(top: 30),
-                            child: SubmitBtn(formKey: formKey))
-                      ],
-                    )))));
+                    )])))));
   }
 }

@@ -41,8 +41,8 @@ class DataModel {
 
   DataModel.empty(){}
 
-  DataModel(
-      {this.cCSDSOMMVERS,
+  DataModel({
+      this.cCSDSOMMVERS,
       this.cOMMENT,
       this.cREATIONDATE,
       this.oRIGINATOR,
