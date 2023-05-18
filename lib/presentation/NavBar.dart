@@ -1,9 +1,15 @@
 
 import 'package:flutter/material.dart';
+import 'package:sat_tracker/presentation/screens/downloadData.dart';
 import 'package:sat_tracker/presentation/screens/form_screen.dart';
+import 'package:sat_tracker/presentation/screens/search_screen.dart';
+
+import '../data/models/satellite.dart';
 
 class NavBar extends StatelessWidget {
-  const NavBar({Key? key}) : super(key: key);
+  final List<Satellite> satellites;
+
+  const NavBar({Key? key, required this.satellites}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -45,18 +51,7 @@ class NavBar extends StatelessWidget {
             );
           },
         ),
-        // ListTile(
-        //   leading: const Icon(Icons.description_rounded),
-        //   title: const Text('3D View'),
-        //   // ignore: avoid_returning_null_for_void
-        //   onTap: (){
-        //     Navigator.pop(context);
-        //     Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => const DownloadDataScreen()),
-        //     );
-        //   },
-        // ),
+
         const Divider(),
         ListTile(
           leading: const Icon(Icons.category_rounded),
@@ -67,16 +62,27 @@ class NavBar extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.youtube_searched_for_rounded),
           title: const Text('Search View'),
-          // ignore: avoid_returning_null_for_void
           onTap: () {
-//             storeData(); // store data from DataModel to local
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SearchScreen(satellites: satellites),
+              ),
+            );
           },
         ),
         ListTile(
           leading: const Icon(Icons.satellite_alt_rounded),
           title: const Text('Download Data'),
           // ignore: avoid_returning_null_for_void
-          onTap: () => null,
+          onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DownloadScreen()),
+              );
+            },
         ),
         const Divider(),
         ListTile(
