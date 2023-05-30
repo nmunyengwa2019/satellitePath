@@ -49,13 +49,15 @@ class ApiClient
         }
 
         // Save data to local storage
-        var directory = await getExternalStorageDirectory();
+        var directory = await getApplicationDocumentsDirectory();
         if (directory == null) {
-          throw Exception('Failed to access external storage');
+          throw Exception('Failed to access application documents directory');
         }
 
         var filePath = '${directory.path}/satellites.json';
         var file = File(filePath);
+
+        if (await file.exists()) await file.delete();
 
         // Extract the required fields from the JSON response
         var jsonData = jsonDecode(utf8.decode(responseBody));
@@ -77,7 +79,7 @@ class ApiClient
 
         // Save the JSON data to shared preferences
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('satellites', jsonEncode(satellites));
+        await prefs.setString('satellitesFilePath', filePath);
 
         // Save timestamp to shared preferences
         await prefs.setInt('lastUpdateTime', DateTime

@@ -1,19 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/dataproviders/loaddata.dart';
 import '../../data/models/satellite.dart';
 
 class SearchScreen extends StatefulWidget {
-  final List<Satellite> satellites;
+  List<Satellite> _satellites;
 
-  const SearchScreen({Key? key, required this.satellites}) : super(key: key);
+  SearchScreen({Key? key, List<Satellite>? satellites})
+      : _satellites = satellites ?? [],
+        super(key: key);
+
+  List<Satellite> get satellites => _satellites;
+
+  setSatellites(List<Satellite> satellites) {
+    _satellites = satellites;
+  }
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late String _searchQuery;
+  late String _searchQuery = '';
 
   final loadData = LoadData();
 
@@ -25,7 +34,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _loadData() async {
     await loadData.loadSatellites();
-    setState(() {});
+    setState(() {
+      widget.setSatellites(loadData.satellites);
+    });
   }
 
   void _handleSatelliteTap(Satellite satellite) {
@@ -33,7 +44,28 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _search() {
-    setState(() {});
+    if (_searchQuery.isEmpty) {
+      // If search query is empty, reset the list to show all satellites
+      setState(() {
+        widget.setSatellites(loadData.satellites);
+      });
+    }
+    else {
+      final visibleSatellites = widget.satellites;
+      final filteredList = visibleSatellites.where((satellite) =>
+          satellite.name.toLowerCase().contains(_searchQuery)).toList();
+      setState(() {
+        widget.setSatellites(filteredList);
+      });
+    }
+  }
+
+  List<Satellite> _searchSatellites(List<Satellite> satellites)
+  {
+    // Filter the list based on the search query
+    final filteredList = satellites.where((satellite) =>
+        satellite.name.toLowerCase().contains(_searchQuery)).toList();
+    return filteredList;
   }
 
   @override
