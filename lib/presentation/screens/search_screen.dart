@@ -44,10 +44,11 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _search() {
+    final filteredList = loadData.searchSatellites(_searchQuery.toLowerCase());
     if (_searchQuery.isEmpty) {
       // If search query is empty, reset the list to show all satellites
       setState(() {
-        widget.setSatellites(loadData.satellites);
+        widget.setSatellites(filteredList);
       });
     }
     else {

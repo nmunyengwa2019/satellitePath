@@ -2,91 +2,144 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sat_tracker/presentation/NavBar.dart';
 import 'package:flutter_map/flutter_map.dart';
+
+import 'data/dataproviders/loaddata.dart';
+import 'data/models/satellite.dart';
+//import 'package:sgp4dart/sgp4dart.dart';
 
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
+  final loadData = LoadData();
+  await loadData.loadSatellites();
 // Allow permissions to save data locally
   if (!kIsWeb) {
     await Permission.storage.request();
   }
 
-  runApp(const MyApp());
+  runApp(MyApp(loadData: loadData));
 }
 
-class MyApp extends StatelessWidget
-{
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  final LoadData loadData;
 
-  // This widget is the root of your application.
+  const MyApp({Key? key, required this.loadData}) : super(key: key);
+
   @override
-  Widget build(BuildContext context)
-  {
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late List<Satellite> _satellites;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSatellites();
+  }
+
+  Future<void> _loadSatellites() async {
+    try {
+      await widget.loadData.loadSatellites();
+      setState(() {
+        _satellites = widget.loadData.satellites;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error loading satellites: $e');
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_satellites == null) {
+      return const CircularProgressIndicator();
+    }
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Satellite Tracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Tracker'),
+      home: MapScreen(title: 'Tracker', satellite: _satellites.first),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget
+class MapScreen extends StatefulWidget
 {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
+  final Satellite satellite;
   final String title;
 
+  const MapScreen({Key? key, required this.title, required this.satellite}) : super(key: key);
+
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-{
+class _MapScreenState extends State<MapScreen> {
+  late List<LatLng> _positions;
+
+  @override
+  void initState() {
+    super.initState();
+    _calculatePositions();
+  }
+
+  Future<void> _calculatePositions() async {
+    final tleLine1 = widget.satellite.tleLine1;
+    final tleLine2 = widget.satellite.tleLine2;
+    final satellite = Satellite.fromTle(tleLine1, tleLine2);
+
+    setState(() {
+      _positions = satellite.positions;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_positions == null) {
+      return const CircularProgressIndicator();
+    }
+
     return Scaffold(
-      drawer: const NavBar(satellites: [],),
       appBar: AppBar(
-        title: const Text('SideBar'),
+        title: Text(widget.satellite.name),
       ),
       body: FlutterMap(
         options: MapOptions(
-          center: LatLng(51.5, -0.09),
-          zoom: 1.0,
+          center: _positions.first,
+          zoom: 3.0,
         ),
         layers: [
           TileLayerOptions(
-            //urlTemplate: 'http://maps.stamen.com/m2i/image/20230420/toner-lite_TrS8Uisw4TA',
             urlTemplate: 'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
             userAgentPackageName: 'com.example.app',
           ),
           PolylineLayerOptions(
             polylines: [
               Polyline(
-                points: [
-                  LatLng(55.64, -156.14), //
-                  LatLng(58.73, -105.14), //
-                  LatLng(39.30, -67.54), //
-                  LatLng(-4.90, -26.70), //
-                  LatLng(-41.73, 7.74), //
-                  LatLng(-49.73, 37.83), //
-                  LatLng(-43.24, 88.45), //
-                  LatLng(10.59, 145.50), //
-                  //LatLng(46.87, -172.39), //
-                  //LatLng(57.20, -140.23), //
-                  //LatLng(63.60, -101.20), //
-                ],
+                points: _positions,
                 color: Colors.blue,
                 strokeWidth: 2,
               ),
             ],
-          )
+          ),
+          MarkerLayerOptions(
+            markers: [
+              Marker(
+                point: _positions.first,
+                builder: (context) => const Icon(
+                  Icons.location_on,
+                  color: Colors.red,
+                  size: 40,
+                ),
+              ),
+            ],
+          ),
         ],
-      )
+      ),
     );
   }
 }
