@@ -8,6 +8,7 @@ class Satellite {
   final String tleLine2;
   final Orbit orbit;
   late final List<LatLng> positions;
+  bool selected = false; // new property
 
   Satellite({required this.name, required this.tleLine1, required this.tleLine2})
       : orbit = Orbit(TLE(name, tleLine1, tleLine2)) {

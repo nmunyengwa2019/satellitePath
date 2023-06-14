@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:sat_tracker/presentation/screens/satelliteScreen.dart';
 
 import '../../data/dataproviders/loaddata.dart';
 import '../../data/models/satellite.dart';
@@ -23,7 +23,6 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late String _searchQuery = '';
-
   final loadData = LoadData();
 
   @override
@@ -39,8 +38,23 @@ class _SearchScreenState extends State<SearchScreen> {
     });
   }
 
+
   void _handleSatelliteTap(Satellite satellite) {
-    // Handle tap on a satellite item
+    final selectedSatelliteName = satellite.name;
+    final selectedSatelliteTleLine1 = satellite.tleLine1;
+    final selectedSatelliteTleLine2 = satellite.tleLine2;
+
+    // Navigate to the satellite tracking screen and pass the selected satellite data
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SatelliteScreen(
+          selectedSatelliteName: selectedSatelliteName,
+          selectedSatelliteTleLine1: selectedSatelliteTleLine1,
+          selectedSatelliteTleLine2: selectedSatelliteTleLine2,
+        ),
+      ),
+    );
   }
 
   void _search() {
@@ -59,14 +73,6 @@ class _SearchScreenState extends State<SearchScreen> {
         widget.setSatellites(filteredList);
       });
     }
-  }
-
-  List<Satellite> _searchSatellites(List<Satellite> satellites)
-  {
-    // Filter the list based on the search query
-    final filteredList = satellites.where((satellite) =>
-        satellite.name.toLowerCase().contains(_searchQuery)).toList();
-    return filteredList;
   }
 
   @override
