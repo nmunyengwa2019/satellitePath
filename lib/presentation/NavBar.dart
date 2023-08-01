@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:sat_tracker/presentation/screens/downloadData.dart';
-import 'package:sat_tracker/presentation/screens/form_screen.dart';
 import 'package:sat_tracker/presentation/screens/search_screen.dart';
 
 import '../data/models/satellite.dart';
@@ -62,10 +61,10 @@ class NavBar extends StatelessWidget {
           title: const Text('Map View'),
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const FormScreen()),
-            );
+            // Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) =>  ),
+            // );
           },
         ),
         const Divider(),
@@ -82,8 +81,7 @@ class NavBar extends StatelessWidget {
             Navigator.pop(context);
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => SearchScreen(satellites: satellites),
+              MaterialPageRoute(builder: (context) => SearchScreen(satellites: satellites),
               ),
             );
           },

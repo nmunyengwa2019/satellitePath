@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/satellite.dart';
 
@@ -12,6 +13,12 @@ class LoadData
   List<Satellite> get satellites => _satellites;
 
   Future<void> loadSatellites() async {
+    // Request external storage permission
+    var permissionStatus = await Permission.storage.request();
+    if (permissionStatus.isDenied)
+    {
+      throw Exception('External storage permission is required');
+    }
     final prefs = await SharedPreferences.getInstance();
     final filePath = prefs.getString('satellitesFilePath');
     if (filePath != null) {

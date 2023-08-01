@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:sat_tracker/presentation/screens/downloadData.dart';
 
 import 'data/dataproviders/loaddata.dart';
 import 'data/models/satellite.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late List<Satellite> _satellites;
+   List<Satellite> _satellites = [];
 
   @override
   void initState() {
@@ -54,15 +55,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (_satellites == null) {
-      return const CircularProgressIndicator();
-    }
+    // if ( _satellites.isEmpty) {
+    //   return const CircularProgressIndicator();
+    // }
     return MaterialApp(
       title: 'Satellite Tracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MapScreen(title: 'Tracker', satellite: _satellites.first),
+      home: MapScreen(title: '', satellite: _satellites.first),
     );
   }
 }

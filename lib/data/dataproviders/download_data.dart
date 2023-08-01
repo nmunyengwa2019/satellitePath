@@ -16,8 +16,9 @@ class ApiClient
   static const String _authPath = "/ajaxauth/login";
   static const String _userName = "poso.draxy@gmail.com";
   static const String _password = "9kj39-Btb8xUB58";
-  static const String _query = "/basicspacedata/query/class/gp/EPOCH/%3Enow-30/orderby/NORAD_CAT_ID,EPOCH/format/json";
-  static const String _cookie = 'chocolatechip=4uqbo14lukj1q10m0shuq7b144ogeprm';
+  static const String _query = "/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/Iridium/format/json";
+  static const String _cookie = 'chocolatechip=inkbbp1d328teh7dpfic57nth12tbefq';
+
 
   Future<void> downloadSatellites(void Function(double) onProgress) async
   {

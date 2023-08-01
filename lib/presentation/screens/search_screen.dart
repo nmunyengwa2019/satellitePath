@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sat_tracker/presentation/screens/satelliteScreen.dart';
-
 import '../../data/dataproviders/loaddata.dart';
 import '../../data/models/satellite.dart';
 

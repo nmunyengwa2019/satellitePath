@@ -7,7 +7,7 @@ class Satellite {
   final String tleLine1;
   final String tleLine2;
   final Orbit orbit;
-  late final List<LatLng> positions;
+  final List<LatLng> positions = [];
   bool selected = false; // new property
 
   Satellite({required this.name, required this.tleLine1, required this.tleLine2})
@@ -35,7 +35,7 @@ class Satellite {
   Future<void> calculatePositions() async {
     final myLocation = Site.fromLatLngAlt(0, 0, 0);
 
-    positions = [];
+    //positions = [];
 
     for (int i = 0; i < 24; i++) {
       final dateTime = DateTime.now().add(Duration(hours: i));
