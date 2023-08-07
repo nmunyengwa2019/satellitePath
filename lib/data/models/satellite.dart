@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -33,9 +34,9 @@ class Satellite {
   }
 
   Future<void> calculatePositions() async {
-    final myLocation = Site.fromLatLngAlt(0, 0, 0);
-
-    //positions = [];
+    LatLng location = await _getCurrentlocation();
+    double latitude = location.latitude;
+    double longitude = location.longitude;
 
     for (int i = 0; i < 24; i++) {
       final dateTime = DateTime.now().add(Duration(hours: i));
@@ -61,6 +62,30 @@ class Satellite {
       }
     }
   }
+  //Getting current location
+  Future<LatLng> _getCurrentlocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if(!serviceEnabled){
+      return Future.error('Location services are disabled');
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if(permission == LocationPermission.denied)
+    {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied)
+      {
+        return Future.error('Location services are denied!');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever){
+      return Future.error('Location permissions are permanently denied,'
+          ' we can not request location');
+    }
+    Position position = await Geolocator.getCurrentPosition();
+    return LatLng(position.latitude, position.longitude);
+  }
+
 
   Eci propagate(DateTime dateTime) {
     final double utcTime =

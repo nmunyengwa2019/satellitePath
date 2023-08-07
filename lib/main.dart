@@ -3,16 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:sat_tracker/presentation/screens/downloadData.dart';
 
 import 'data/dataproviders/loaddata.dart';
 import 'data/models/satellite.dart';
-//import 'package:sgp4dart/sgp4dart.dart';
 
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
   final loadData = LoadData();
+
   await loadData.loadSatellites();
 // Allow permissions to save data locally
   if (!kIsWeb) {

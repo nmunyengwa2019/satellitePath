@@ -128,20 +128,5 @@ class ApiClient
     {
       throw Exception('Failed to download satellites: $e');
     }
-
-    // Read data from local storage
-    final prefs = await SharedPreferences.getInstance();
-    final jsonString = prefs.getString('satellites');
-    if (jsonString != null)
-    {
-      final data = jsonDecode(jsonString);
-      if (kDebugMode) {
-        print(data);
-      }
-    }
-    else
-    {
-      throw Exception('Failed to read data from local storage');
-    }
   }
 }
