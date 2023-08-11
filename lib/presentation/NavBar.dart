@@ -49,7 +49,7 @@ class NavBar extends StatelessWidget {
             ),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => MapScreen(satellite: satellite, title: satellite.name)),
               );
@@ -61,7 +61,7 @@ class NavBar extends StatelessWidget {
           title: const Text('Map View'),
           onTap: () {
             Navigator.pop(context);
-            // Navigator.push(
+            // Navigator.pushReplacement(
             //   context,
             //   MaterialPageRoute(builder: (context) =>  ),
             // );
@@ -79,7 +79,7 @@ class NavBar extends StatelessWidget {
           title: const Text('Search View'),
           onTap: () {
             Navigator.pop(context);
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => SearchScreen(satellites: satellites),
               ),
@@ -92,7 +92,7 @@ class NavBar extends StatelessWidget {
           // ignore: avoid_returning_null_for_void
           onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => const DownloadScreen()),
               );

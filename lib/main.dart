@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:sat_tracker/presentation/NavBar.dart';
 
 import 'data/dataproviders/loaddata.dart';
 import 'data/models/satellite.dart';
@@ -103,9 +104,15 @@ class _MapScreenState extends State<MapScreen> {
       return const CircularProgressIndicator();
     }
 
+    return Builder(
+      builder: (BuildContext context){
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.satellite.name),
+      ),
+      drawer: NavBar(
+        satellites: [],
+        selectedSatellite: widget.satellite,
       ),
       body: FlutterMap(
         options: MapOptions(
@@ -140,6 +147,8 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
+    );
+      },
     );
   }
 }

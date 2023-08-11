@@ -7,7 +7,7 @@ class SatelliteScreen extends StatefulWidget {
   final String selectedSatelliteTleLine1;
   final String selectedSatelliteTleLine2;
 
-  SatelliteScreen({
+  const SatelliteScreen({
     Key? key,
     required this.selectedSatelliteName,
     required this.selectedSatelliteTleLine1,
