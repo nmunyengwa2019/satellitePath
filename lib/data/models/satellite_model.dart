@@ -1,31 +1,28 @@
-class DataModel {
-  String? oBJECTNAME;
-  String? tLELINE0;
-  String? tLELINE1;
-  String? tLELINE2;
+class SatelliteData {
+  String? TLE_LINE0;
+  String? TLE_LINE1;
+  String? TLE_LINE2;
 
+  SatelliteData.empty(){}
 
-  DataModel.empty(){}
+  SatelliteData({
+      this.TLE_LINE0,
+      this.TLE_LINE1,
+      this.TLE_LINE2});
 
-  DataModel({
-      this.oBJECTNAME,
-      this.tLELINE0,
-      this.tLELINE1,
-      this.tLELINE2});
-
-  DataModel.fromJson(Map<String, dynamic> json) {
-    oBJECTNAME = json['OBJECT_NAME'];
-    tLELINE0 = json['TLE_LINE0'];
-    tLELINE1 = json['TLE_LINE1'];
-    tLELINE2 = json['TLE_LINE2'];
+  factory SatelliteData.fromJson(Map<String, dynamic> json){
+    return SatelliteData(
+        TLE_LINE0: json['TLE_LINE0'],
+        TLE_LINE1: json['TLE_LINE1'],
+        TLE_LINE2: json['TLE_LINE2'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
-    data['OBJECT_NAME'] = oBJECTNAME;
-    data['TLE_LINE0'] = tLELINE0;
-    data['TLE_LINE1'] = tLELINE1;
-    data['TLE_LINE2'] = tLELINE2;
+    final Map<String, dynamic> data = {};
+    data['TLE_LINE0'] = TLE_LINE0;
+    data['TLE_LINE1'] = TLE_LINE1;
+    data['TLE_LINE2'] = TLE_LINE2;
     return data;
   }
 }

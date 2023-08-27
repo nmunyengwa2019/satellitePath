@@ -8,8 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/satellite_model.dart';
 
-class ApiClient
-{
+class ApiClient {
   const ApiClient();
 
   static const String _baseURL = "https://www.space-track.org";
@@ -20,8 +19,7 @@ class ApiClient
   static const String _cookie = 'chocolatechip=inkbbp1d328teh7dpfic57nth12tbefq';
 
 
-  Future<void> downloadSatellites(void Function(double) onProgress) async
-  {
+  Future<void> downloadSatellites(void Function(double) onProgress) async {
     try
     {
       var headers =
@@ -42,61 +40,40 @@ class ApiClient
       if (response.statusCode == 200) {
         var responseBody = response.bodyBytes;
 
-        // Request external storage permission
-        var permissionStatus = await Permission.storage.request();
-        if (permissionStatus.isDenied)
+        // Check if local storage permission is already granted
+        var permissionStatus = await Permission.manageExternalStorage.status;
+        if (permissionStatus.isGranted)
         {
-          throw Exception('External storage permission is required');
+          var directory = await getApplicationDocumentsDirectory();
+          var filePath = '${directory.path}/satellites.json';
+          var file = File(filePath);
+          if (await file.exists()) await file.delete();
+
+          var jsonData = jsonDecode(utf8.decode(responseBody)); // Extract the required fields from the JSON response
+          var satellites = jsonData.map((e) => SatelliteData.fromJson({
+            'TLE_LINE0': e['TLE_LINE0'],
+            'TLE_LINE1': e['TLE_LINE1'],
+            'TLE_LINE2': e['TLE_LINE2']
+          })).toList();
+          var progress = 0.05;
+          file.writeAsString(jsonEncode(satellites)).asStream().listen((event)
+          {
+            onProgress(progress); // Report progress as the data is being written to the file
+            progress += 0.01; // Increase progress by 1% each time
+          });
+
+          final prefs = await SharedPreferences.getInstance(); // Save the JSON data to shared preferences
+          await prefs.setString('satellitesFilePath', filePath);
+          await prefs.setInt('lastUpdateTime', DateTime.now().millisecondsSinceEpoch); // Save timestamp to shared preferences
+
+          if (kDebugMode) {
+            print('Data saved to local storage');
+          }
         }
-
-        // Save data to local storage
-        var directory = await getApplicationDocumentsDirectory();
-        if (directory == null) {
-          throw Exception('Failed to access application documents directory');
-        }
-
-        var filePath = '${directory.path}/satellites.json';
-        var file = File(filePath);
-
-        if (await file.exists()) await file.delete();
-
-        // Extract the required fields from the JSON response
-        var jsonData = jsonDecode(utf8.decode(responseBody));
-        var satellites = jsonData.map((e) => DataModel.fromJson({
-          'OBJECT_NAME': e['OBJECT_NAME'],
-          'TLE_LINE0': e['TLE_LINE0'],
-          'TLE_LINE1': e['TLE_LINE1'],
-          'TLE_LINE2': e['TLE_LINE2']
-        })).toList();
-
-        // Write the JSON data to a file in external storage
-        var progress = 0.5;
-        file.writeAsString(jsonEncode(satellites)).asStream().listen((event)
-        {
-          // Report progress as the data is being written to the file
-          onProgress(progress);
-          progress += 0.01; // Increase progress by 1% each time
-        });
-
-        // Save the JSON data to shared preferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('satellitesFilePath', filePath);
-
-        // Save timestamp to shared preferences
-        await prefs.setInt('lastUpdateTime', DateTime
-            .now()
-            .millisecondsSinceEpoch);
-
+      } else {
         if (kDebugMode) {
-          print('Data saved to local storage');
-        }
-      }
-      else {
-        if (kDebugMode) {
-          print(
-              'Server response status code is not 200: ${response.statusCode}');
-          throw Exception(
-              'Server responded with status code ${response.statusCode}');
+          print('Server response status code is not 200: ${response.statusCode}');
+          throw Exception('Server responded with status code ${response.statusCode}');
         }
       }
 

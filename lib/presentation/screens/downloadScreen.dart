@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
-
+import 'package:sat_tracker/presentation/screens/search_screen.dart';
 import '../../data/dataproviders/download_data.dart';
+import '../../data/models/satellite.dart';
+
 
 class DownloadScreen extends StatefulWidget {
   const DownloadScreen({Key? key}) : super(key: key);
@@ -11,9 +12,17 @@ class DownloadScreen extends StatefulWidget {
 }
 
 class _DownloadScreenState extends State<DownloadScreen> {
+  TrackSatellite trackSatellite = TrackSatellite();
+  List<String>? satelliteNames;
   bool _downloading = false;
   double _progress = 0;
   String _status = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSatelliteNames();
+  }
 
   final ApiClient _apiClient = const ApiClient();
 
@@ -47,6 +56,17 @@ class _DownloadScreenState extends State<DownloadScreen> {
     }
   }
 
+  Future<void> _loadSatelliteNames() async {
+    setState(() {
+    });
+
+    satelliteNames = await trackSatellite.loadSatelliteNames();
+
+    setState(() {
+      satelliteNames != null; // Set downloadComplete to false
+    });
+  }
+
   Future<void> _startDownload() async {
     setState(() {
       _downloading = true;
@@ -55,12 +75,6 @@ class _DownloadScreenState extends State<DownloadScreen> {
     });
 
     try {
-      // Request permission to write to external storage
-      var permissionStatus = await Permission.storage.request();
-      if (!permissionStatus.isGranted) {
-        throw Exception('Permission denied');
-      }
-
         await _apiClient.downloadSatellites((progress) {
           setState(() {
             _progress = progress;
@@ -72,6 +86,14 @@ class _DownloadScreenState extends State<DownloadScreen> {
           _progress = 1;
           _status = 'Download complete!';
         });
+
+
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => SearchScreen(satelliteNames: satelliteNames!)),
+                (Route<dynamic> route) => false,
+          );
+
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -107,15 +129,13 @@ class _DownloadScreenState extends State<DownloadScreen> {
                 fontSize: 20,
               ),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _showConfirmationDialog,
+              child: const Text('Download'),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _showConfirmationDialog();
-        },
-        tooltip: 'Download',
-        child: const Icon(Icons.arrow_downward),
       ),
     );
   }

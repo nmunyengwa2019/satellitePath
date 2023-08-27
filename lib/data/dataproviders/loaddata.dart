@@ -1,71 +1,47 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/satellite.dart';
+import '../models/satellite_model.dart';
 
-class LoadData
-{
-  late List<Satellite> _satellites;
-  late Map<String, Satellite> _satelliteMap;
+class LoadData {
+  List<SatelliteData> satellites = [];
 
-  List<Satellite> get satellites => _satellites;
+  Future<List<SatelliteData>> loadSatellites({void Function(double)? onProgress}) async {
+    List<SatelliteData>  _satelliteList = [];
 
-  Future<void> loadSatellites() async {
-    // Request external storage permission
-    var permissionStatus = await Permission.storage.request();
-    if (permissionStatus.isDenied)
-    {
-      throw Exception('External storage permission is required');
-    }
     final prefs = await SharedPreferences.getInstance();
     final filePath = prefs.getString('satellitesFilePath');
+
     if (filePath != null) {
       final file = File(filePath);
       if (await file.exists()) {
-        final jsonString = await file.readAsString();
-        if (kDebugMode) {
-          print('JSON data loaded from file: $jsonString');
-        }
-        final jsonData = jsonDecode(jsonString);
-        _satellites = List<Satellite>.from(
-            jsonData.map((e) => Satellite.fromJson(e))
-        );
-        _preprocessSatellites();
-      } else {
-        throw Exception('Data file does not exist: $filePath');
-      }
-    } else {
-      throw Exception('File path not found in shared preferences');
-    }
-  }
-  void _preprocessSatellites() {
-    try {
-      _satelliteMap = { for (var satellite in _satellites) satellite.name.toLowerCase() : satellite };
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error preprocessing satellites: $e');
-      }
-      _satelliteMap = {};
-    }
-  }
+        final totalBytes = await file.length();
+        final progressStream = file.openRead().cast<List<int>>();
+        var loadedBytes = 0;
+        await for (final chunk in progressStream) {
+          loadedBytes += chunk.length;
+          final progress = loadedBytes / totalBytes;
+          if (onProgress != null) {
+            onProgress(progress);
+          }
+          // Concatenate all chunks into a single list
+          final bytes = chunk.toList();
+          final jsonString = utf8.decode(bytes);
+          //final jsonString = await file.readAsString();
+          final jsonData = jsonDecode(jsonString);
+          _satelliteList = List<SatelliteData>.from(
+              jsonData.map((e) => SatelliteData.fromJson(e)));
 
-  List<Satellite> searchSatellites(String query) {
-    try {
-      if (query.isEmpty) {
-        return _satellites;
+          if (kDebugMode) {
+            print('JSON data loaded from file: $jsonString');
+          }
+        }
+      } else {
+        debugPrint('\n\n File path not found in shared preferences \n\n');
+        // throw Exception('File path not found in shared preferences');
       }
-      final filteredList = _satelliteMap.entries
-          .where((entry) => entry.key.contains(query))
-          .map((entry) => entry.value)
-          .toList();
-      return filteredList;
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error searching satellites: $e');
-      }
-      return [];
     }
+    return _satelliteList;
   }
 }
