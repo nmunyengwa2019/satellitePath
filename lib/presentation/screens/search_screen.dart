@@ -46,21 +46,15 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Future<void> _selectSatellite(SatelliteData satellite) async {
 
-    final result = await trackSatellite.calculatePositions( satellite.TLE_LINE0!, satellite.TLE_LINE1!, satellite.TLE_LINE2!,);
+    List<LatLng> result = await trackSatellite.calculatePositions( satellite.TLE_LINE0!, satellite.TLE_LINE1!, satellite.TLE_LINE2!,);
 
-    List<LatLng> formattedPositions = result.map((position) {
-      double formattedLatitude = position.latitude;
-      double formattedLongitude = position.longitude;
-      return LatLng(formattedLatitude, formattedLongitude);
-    }).toList();
-
-    if (formattedPositions.isNotEmpty) {
+    if (result.isNotEmpty) {
       Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => MapScreen(
             title: 'Map Screen',
-            positions: formattedPositions,
+            positions: result,
           ),
         ),
       );

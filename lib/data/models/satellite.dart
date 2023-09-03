@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 import 'package:latlong2/latlong.dart';
+import 'custom_latlng.dart';
 
 
 class TrackSatellite {
@@ -12,7 +13,8 @@ class TrackSatellite {
     final TLE tle = TLE(name, tleLine1, tleLine2);
     final orbit = Orbit(tle);
     final now = DateTime.now();
-    final positions = <LatLng>[];
+    final positions = <CustomLatLng>[];
+    //final positions = <LatLng>[];
 
     final initialTime = Julian.fromFullDate(now.year, now.month, now.day, now.hour, now.minute).getDate() + 4 / 24.0;
     final Eci eciPos = orbit.getPosition((initialTime - orbit.epoch().getDate()) * MIN_PER_DAY);
@@ -28,16 +30,15 @@ class TrackSatellite {
     final  meanMotion = orbit.meanMotion();
     final  meanAnomaly = rad2deg(orbit.meanAnomaly());
 
-    final intialPosition = LatLng(rad2deg(coord.lat), rad2deg(coord.lon));
+    //final intialPosition = LatLng(rad2deg(coord.lat), rad2deg(coord.lon));
     final intialHeight =  coord.alt;
     final initialAzimuth = rad2deg(topo.az);
     final initialElevation = rad2deg(topo.el) ;
     final initialRange = topo.range;
-    final intialOrbitalPeriod = (orbit.period() / 60.0).round();
-    //const intialOrbitalPeriod = 5;
+    //final intialOrbitalPeriod = (orbit.period() / 60.0).round();
+    const intialOrbitalPeriod = 5;
 
-    for(int minute = 0; minute < intialOrbitalPeriod; minute++)
-      {
+    for(int minute = 0; minute < intialOrbitalPeriod; minute++) {
         final timeOffset = (initialTime - orbit.epoch().getDate()) * MIN_PER_DAY + minute;
         final currentMeanAnomaly = meanAnomaly + meanMotion * timeOffset;
         final currentEccentricAnomaly = calculateEccentricAnomaly(currentMeanAnomaly, eccentricity);
@@ -55,13 +56,20 @@ class TrackSatellite {
         final currentElevation = initialElevation;
         final currentRange = initialRange;
 
-        positions.add(LatLng(currentLatitude, currentLongitude));
+        positions.add(CustomLatLng(currentLatitude, currentLongitude));
+        //positions.add(LatLng(currentLatitude, currentLongitude));
 
         if (kDebugMode) {
-          //print('Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
+          print('Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
         }
       }
-    return positions;
+    var outputList = positions.map((customLatLng) {
+      return LatLng(customLatLng.latitude, customLatLng.longitude);
+    }).toList();
+
+    print(outputList);
+
+    return outputList;
   }
 
   double calculateEccentricAnomaly(double currentMeanAnomaly, double eccentricity)

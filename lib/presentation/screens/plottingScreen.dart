@@ -14,13 +14,6 @@ class MapScreen extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      //final formattedPositions = positions.map((position) {
-      //  return 'LatLng(${position.latitude}, ${position.longitude})'; }).toList();
-      //print('Positions: $formattedPositions');
-
-      print('First position: ${positions.first}');
-    } // Print the contents of positions variable
         return Scaffold(
           appBar: AppBar(
             title: const Text('Test View'),
