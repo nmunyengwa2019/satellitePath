@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:sat_tracker/presentation/screens/plottingScreen.dart';
 import '../../data/dataproviders/loaddata.dart';
 import '../../data/models/satellite.dart';
 import '../../data/models/satellite_model.dart';
 
 class SearchScreen extends StatefulWidget {
+  List<String> satelliteNames;
 
-  const SearchScreen({Key? key, required List<String> satelliteNames, }) : super(key: key);
+  SearchScreen({Key? key, required this.satelliteNames, }) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -17,7 +19,6 @@ class _SearchScreenState extends State<SearchScreen> {
   TrackSatellite trackSatellite = TrackSatellite();
   double _loadingProgress = 0.0;
   late String _searchQuery = '';
-  List<String> _satelliteNames = [];
   List<SatelliteData> _satelliteList = [];
 
   @override
@@ -26,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
     processSatellites();
   }
 
-  Future<List<SatelliteData>> processSatellites() async {
+  Future<void> processSatellites() async {
     LoadData loadData = LoadData();
     final results = await loadData.loadSatellites(
       onProgress: (progress) {
@@ -36,32 +37,50 @@ class _SearchScreenState extends State<SearchScreen> {
       },
     );
     _satelliteList = results;
-    final result = await trackSatellite.loadSatelliteNames();
-    _satelliteNames = result;
+    final result = await loadData.loadSatelliteNames();
     setState(() {
+      widget.satelliteNames = result;
       _loadingProgress = 1.0;
     });
-
-    return _satelliteList;
   }
 
-  Future<void> _selectSatellite(SatelliteData satellite)  async {
-    final result = await trackSatellite.calculatePositions(satellite.TLE_LINE0!,
-        satellite.TLE_LINE1!, satellite.TLE_LINE2!);
+  Future<void> _selectSatellite(SatelliteData satellite) async {
 
-    if (kDebugMode) {
-      print (result);
-    }
+    final result = await trackSatellite.calculatePositions( satellite.TLE_LINE0!, satellite.TLE_LINE1!, satellite.TLE_LINE2!,);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MapScreen(
-          title: 'Map Screen',
-          positions: result,// as List<LatLng>,
+    List<LatLng> formattedPositions = result.map((position) {
+      double formattedLatitude = position.latitude;
+      double formattedLongitude = position.longitude;
+      return LatLng(formattedLatitude, formattedLongitude);
+    }).toList();
+
+    if (formattedPositions.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MapScreen(
+            title: 'Map Screen',
+            positions: formattedPositions,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('No Positions'),
+          content: const Text('No positions data available for this satellite.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -76,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       );
     } else {
-      List<String> filteredSatellites = _satelliteNames.where((satelliteName) =>
+      List<String> filteredSatellites = widget.satelliteNames.where((satelliteName) =>
           satelliteName.toLowerCase().contains(_searchQuery.toLowerCase()))
           .toList();
       return Scaffold(
@@ -101,7 +120,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 IconButton(
                     icon: const Icon(Icons.search),
                     onPressed: () {
-                      //_search(); TODO Add code for search here
                     })
               ]),
               Expanded(
@@ -114,9 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       return ListTile(
                         title: Text(satelliteName),
                         onTap: () {
-                          setState(() {
-                            _selectSatellite(satellite);
-                          });
+                          _selectSatellite(satellite);
                         },
                       );
                     },

@@ -6,9 +6,11 @@ import '../models/satellite_model.dart';
 
 class LoadData {
   List<SatelliteData> satellites = [];
+  List<String> _satelliteNames = [];
+  List<SatelliteData> _satelliteList = [];
+
 
   Future<List<SatelliteData>> loadSatellites({void Function(double)? onProgress}) async {
-    List<SatelliteData>  _satelliteList = [];
 
     final prefs = await SharedPreferences.getInstance();
     final filePath = prefs.getString('satellitesFilePath');
@@ -30,11 +32,11 @@ class LoadData {
           final jsonString = utf8.decode(bytes);
           //final jsonString = await file.readAsString();
           final jsonData = jsonDecode(jsonString);
-          _satelliteList = List<SatelliteData>.from(
-              jsonData.map((e) => SatelliteData.fromJson(e)));
+          _satelliteList = List<SatelliteData>.from(jsonData.map((e) => SatelliteData.fromJson(e)));
 
           if (kDebugMode) {
-            print('JSON data loaded from file: $jsonString');
+            print("Data Loaded successfully");
+            //print('JSON data loaded from file: $jsonString');
           }
         }
       } else {
@@ -43,5 +45,12 @@ class LoadData {
       }
     }
     return _satelliteList;
+  }
+
+  Future<List<String>> loadSatelliteNames() async {
+    _satelliteList = await loadSatellites();
+    _satelliteNames = _satelliteList.map((satellite) => satellite.TLE_LINE0!).toList();
+
+    return _satelliteNames;
   }
 }

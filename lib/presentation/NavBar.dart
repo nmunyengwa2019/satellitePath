@@ -79,7 +79,7 @@ class NavBar extends StatelessWidget {
             Navigator.pop(context);
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const SearchScreen(satelliteNames: [],),
+              MaterialPageRoute(builder: (context) => SearchScreen(satelliteNames: [],),
               ),
             );
           },

@@ -1,23 +1,10 @@
 import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:sat_tracker/data/models/satellite_model.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../dataproviders/loaddata.dart';
 
 class TrackSatellite {
-  LoadData loadData = LoadData();
-  List<String> _satelliteNames = [];
-  List<SatelliteData> _satelliteList = [];
-
-  Future<List<String>> loadSatelliteNames() async {
-    final results = await loadData.loadSatellites();
-    _satelliteList = results;
-    _satelliteNames = (loadData.satellites).map((satellite) => satellite.TLE_LINE0!).toList();
-
-    return _satelliteNames;
-  }
 
   Future<List<LatLng>> calculatePositions(String name, String tleLine1, String tleLine2) async {
     final Site myLocation = Site.fromLatLngAlt(23.1359405517578, -82.3583297729492, 59 / 1000.0); // TODO my location replace
@@ -71,7 +58,7 @@ class TrackSatellite {
         positions.add(LatLng(currentLatitude, currentLongitude));
 
         if (kDebugMode) {
-          print('Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
+          //print('Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
         }
       }
     return positions;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sat_tracker/presentation/screens/search_screen.dart';
 import '../../data/dataproviders/download_data.dart';
-import '../../data/models/satellite.dart';
+import '../../data/dataproviders/loaddata.dart';
 
 
 class DownloadScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class DownloadScreen extends StatefulWidget {
 }
 
 class _DownloadScreenState extends State<DownloadScreen> {
-  TrackSatellite trackSatellite = TrackSatellite();
+  LoadData loadData = LoadData();
   List<String>? satelliteNames;
   bool _downloading = false;
   double _progress = 0;
@@ -21,7 +21,6 @@ class _DownloadScreenState extends State<DownloadScreen> {
   @override
   void initState() {
     super.initState();
-    _loadSatelliteNames();
   }
 
   final ApiClient _apiClient = const ApiClient();
@@ -56,17 +55,6 @@ class _DownloadScreenState extends State<DownloadScreen> {
     }
   }
 
-  Future<void> _loadSatelliteNames() async {
-    setState(() {
-    });
-
-    satelliteNames = await trackSatellite.loadSatelliteNames();
-
-    setState(() {
-      satelliteNames != null; // Set downloadComplete to false
-    });
-  }
-
   Future<void> _startDownload() async {
     setState(() {
       _downloading = true;
@@ -87,19 +75,27 @@ class _DownloadScreenState extends State<DownloadScreen> {
           _status = 'Download complete!';
         });
 
+        satelliteNames = await loadData.loadSatelliteNames();
 
+        if (satelliteNames != null && satelliteNames!.isNotEmpty) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => SearchScreen(satelliteNames: satelliteNames!)),
+            MaterialPageRoute(builder: (context) =>
+                SearchScreen(satelliteNames: satelliteNames!)),
                 (Route<dynamic> route) => false,
           );
-
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Satellite data downloaded successfully'),
-        ),
-      );
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Satellite data downloaded successfully'),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No Satellite names found'),
+            ),
+          );
+        }
       } on Exception catch (e) {
       setState(() {
         _downloading = false;
