@@ -4,16 +4,16 @@ import 'package:open_app_settings/open_app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-void main() async
-{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-
-  const MyApp({Key? key,}) : super(key: key);
+  const MyApp({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -51,66 +51,66 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     if (!_permissionsGranted) {
-    if (!_permissionsRequested) {
-      return MaterialApp(
-        home: Scaffold(
-          backgroundColor: Colors.blue,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                SpinKitDoubleBounce(
-                  color: Colors.white,
-                  size: 50.0,
-                ),
-                SizedBox(height: 16.0),
-                Text(
-                  'Requesting Permissions...',
-                  style: TextStyle(
+      if (!_permissionsRequested) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            backgroundColor: Colors.blue,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  SpinKitDoubleBounce(
                     color: Colors.white,
-                    fontSize: 18.0,
+                    size: 50.0,
                   ),
-                ),
-              ],
+                  SizedBox(height: 16.0),
+                  Text(
+                    'Requesting Permissions...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        return MaterialApp(
+          home: Scaffold(
+            backgroundColor: Colors.blue,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Permissions Required',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      OpenAppSettings.openAppSettings();
+                    },
+                    child: const Text('Open Settings'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
     } else {
       return MaterialApp(
-        home: Scaffold(
-          backgroundColor: Colors.blue,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Permissions Required',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    OpenAppSettings.openAppSettings();
-                  },
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            ),
+          title: 'Satellite Tracker',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
           ),
-        ),
-      );
-    }
-  } else {
-    return MaterialApp(
-      title: 'Satellite Tracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const DownloadScreen()
-      );
+          home: const DownloadScreen());
     }
   }
 }
