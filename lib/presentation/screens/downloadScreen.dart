@@ -5,6 +5,7 @@ import '../../data/dataproviders/loaddata.dart';
 
 
 class DownloadScreen extends StatefulWidget {
+  static String routeName = "/download_screen";
   const DownloadScreen({Key? key}) : super(key: key);
 
   @override

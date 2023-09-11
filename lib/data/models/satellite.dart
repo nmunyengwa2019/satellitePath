@@ -3,95 +3,163 @@ import 'package:flutter/foundation.dart';
 import 'package:sgp4_sdp4/sgp4_sdp4.dart';
 import 'package:latlong2/latlong.dart';
 import 'custom_latlng.dart';
+import 'package:sat_tracker/globals.dart' as globals;
 
 class TrackSatellite {
   Future<List<LatLng>> calculatePositions(
       String name, String tleLine1, String tleLine2) async {
+    globals.positions.clear();
+    // globals.latitudes.clear();
+    // globals.longitudes.clear();
+
+    // const String name = "NOAA 1";
+    // const String line1 =
+    //     "1 04793U 70106A   21165.13556590 -.00000028  00000-0  10004-3 0  9995";
+    // const String line2 =
+    //     "2 04793 101.6071 232.4155 0031175 318.8433  69.5245 12.53999256311423";
+
+    // const String name = "ISS (ZARYA)";
+    // const String line1 =
+    //     "1 25544U 98067A   20300.83097691  .00001534  00000-0  35580-4 0  9996";
+    // const String line2 =
+    //     "2 25544  51.6453  57.0843 0001671  64.9808  73.0513 15.49338189252428";
+
+    const String name = "FENGYUN 1C DEB";
+    const String line1 =
+        "1 29733U 99025X   21080.32325869  .00000063  00000-0  17212-3 0  9993";
+    const String line2 =
+        "2 29733  99.2303  24.6693 0578834 210.4520 307.7773 12.92087092667824";
+
+    /// Get the current date and time
+    final dateTime = DateTime.now();
+    // final positions = <Eci>[];
+    final latitudes = [];
+    final longitudes = [];
+    List<LatLng> newLatLong = [];
+
+    /// Parse the TLE
+    final TLE tleSGP4 = TLE(name, line1, line2);
+
+    ///Create a orbit object and print if is
+    ///SGP4, for "near-Earth" objects, or SDP4 for "deep space" objects.
+    final Orbit orbit = new Orbit(tleSGP4);
+    print("is SGP4: ${orbit.period() < 255 * 60}");
+
+    /// get the utc time in Julian Day
+    ///  + 4/24 need it, diferent time zone (Cuba -4 hrs )
+    final double utcTime = Julian.fromFullDate(dateTime.year, dateTime.month,
+                dateTime.day, dateTime.hour, dateTime.minute)
+            .getDate() +
+        4 / 24.0;
+
+    // final Eci eciPos =
+    //     orbit.getPosition((utcTime - orbit.epoch().getDate()) * MIN_PER_DAY);
+
+    for (int i = 0; i < 100; i++) {
+      // Calculate positions for 100 time points
+      // final position = satellite.getPosition(now.add(Duration(minutes: i * 10)));
+
+      final Eci eciPos = orbit.getPosition(
+          ((utcTime + (i * 10)) - orbit.epoch().getDate()) * MIN_PER_DAY);
+      // globals.positions.add(eciPos);
+
+      ///Get the current lat, lng of the satellite
+      final CoordGeo coord = eciPos.toGeo();
+      if (coord.lon > PI) coord.lon -= TWOPI;
+      var Latitude = rad2deg(coord.lat);
+      var Longitude = rad2deg(coord.lon);
+      newLatLong.add(LatLng(Latitude, Longitude));
+      // globals.latitudes.add(Latitude);
+      // globals.longitudes.add(Longitude);
+      // print("lat: ${rad2deg(coord.lat)}  lng: ${rad2deg(coord.lon)} \n");
+    }
+    // print(" \nLatitudes>>> ${globals.latitudes}");
+    // print("Epos>>> ${globals.positions}");
     final Site myLocation = Site.fromLatLngAlt(23.1359405517578,
         -82.3583297729492, 59 / 1000.0); // TODO my location replace
     CoordGeo myLocation1 =
         CoordGeo(lat: 23.1359405517578, lon: -82.3583297729492, alt: 0.0);
     final TLE tle = TLE(name, tleLine1, tleLine2);
-    final orbit = Orbit(tle);
+    // final orbit = Orbit(tle);
     final now = DateTime.now();
     final positions = <CustomLatLng>[];
     //final positions = <LatLng>[];
 
-    final initialTime =
-        Julian.fromFullDate(now.year, now.month, now.day, now.hour, now.minute)
-                .getDate() +
-            4 / 24.0;
-    final Eci eciPos = orbit
-        .getPosition((initialTime - orbit.epoch().getDate()) * MIN_PER_DAY);
+    // final initialTime =
+    //     Julian.fromFullDate(now.year, now.month, now.day, now.hour, now.minute)
+    //             .getDate() +
+    //         4 / 24.0;
+    // final Eci eciPos = orbit
+    //     .getPosition((initialTime - orbit.epoch().getDate()) * MIN_PER_DAY);
 
-    final CoordGeo coord = eciPos.toGeo();
+    // final CoordGeo coord = eciPos.toGeo();
 
-    ///Get the current lat, lng of the satellite
-    if (coord.lon > PI) coord.lon -= TWOPI;
-    CoordTopo topo = myLocation.getLookAngle(eciPos);
+    // ///Get the current lat, lng of the satellite
+    // if (coord.lon > PI) coord.lon -= TWOPI;
+    // CoordTopo topo = myLocation.getLookAngle(eciPos);
 
-    final eccentricity = orbit.eccentricity();
-    final inclination = rad2deg(orbit.inclination());
-    final argumentOfPerigee = rad2deg(orbit.argPerigee());
-    final raan = rad2deg(orbit.raan());
-    final meanMotion = orbit.meanMotion();
-    final meanAnomaly = rad2deg(orbit.meanAnomaly());
+    // final eccentricity = orbit.eccentricity();
+    // final inclination = rad2deg(orbit.inclination());
+    // final argumentOfPerigee = rad2deg(orbit.argPerigee());
+    // final raan = rad2deg(orbit.raan());
+    // final meanMotion = orbit.meanMotion();
+    // final meanAnomaly = rad2deg(orbit.meanAnomaly());
 
-    //final intialPosition = LatLng(rad2deg(coord.lat), rad2deg(coord.lon));
-    final intialHeight = coord.alt;
-    final initialAzimuth = rad2deg(topo.az);
-    final initialElevation = rad2deg(topo.el);
-    final initialRange = topo.range;
-    //final intialOrbitalPeriod = (orbit.period() / 60.0).round();
-    const intialOrbitalPeriod = 5;
+    // //final intialPosition = LatLng(rad2deg(coord.lat), rad2deg(coord.lon));
+    // final intialHeight = coord.alt;
+    // final initialAzimuth = rad2deg(topo.az);
+    // final initialElevation = rad2deg(topo.el);
+    // final initialRange = topo.range;
+    // //final intialOrbitalPeriod = (orbit.period() / 60.0).round();
+    // const intialOrbitalPeriod = 5;
 
-    for (int minute = 0; minute < intialOrbitalPeriod; minute++) {
-      final timeOffset =
-          (initialTime - orbit.epoch().getDate()) * MIN_PER_DAY + minute;
-      final currentMeanAnomaly = meanAnomaly + meanMotion * timeOffset;
-      final currentEccentricAnomaly =
-          calculateEccentricAnomaly(currentMeanAnomaly, eccentricity);
-      final currentTrueAnomaly =
-          calculateTrueAnomaly(currentEccentricAnomaly, eccentricity);
-      final currentRadius = calculateRadius(currentTrueAnomaly, eccentricity);
-      final currentArgumentOfLatitude =
-          calculateArgumentOfLatitude(currentTrueAnomaly, argumentOfPerigee);
-      final currentLongitudeOfAscendingNode =
-          calculateLongitudeOfAscendingNode(raan);
-      final currentLongitude = calculateLongitude(currentArgumentOfLatitude,
-          currentLongitudeOfAscendingNode, myLocation1);
-      final currentLatitude = calculateLatitude(
-          inclination,
-          currentLongitudeOfAscendingNode,
-          currentArgumentOfLatitude,
-          myLocation1);
-      //final currentPosition = LatLng(currentLatitude, currentLongitude);
+    // for (int minute = 0; minute < intialOrbitalPeriod; minute++) {
+    //   final timeOffset =
+    //       (initialTime - orbit.epoch().getDate()) * MIN_PER_DAY + minute;
+    //   final currentMeanAnomaly = meanAnomaly + meanMotion * timeOffset;
+    //   final currentEccentricAnomaly =
+    //       calculateEccentricAnomaly(currentMeanAnomaly, eccentricity);
+    //   final currentTrueAnomaly =
+    //       calculateTrueAnomaly(currentEccentricAnomaly, eccentricity);
+    //   final currentRadius = calculateRadius(currentTrueAnomaly, eccentricity);
+    //   final currentArgumentOfLatitude =
+    //       calculateArgumentOfLatitude(currentTrueAnomaly, argumentOfPerigee);
+    //   final currentLongitudeOfAscendingNode =
+    //       calculateLongitudeOfAscendingNode(raan);
+    //   final currentLongitude = calculateLongitude(currentArgumentOfLatitude,
+    //       currentLongitudeOfAscendingNode, myLocation1);
+    //   final currentLatitude = calculateLatitude(
+    //       inclination,
+    //       currentLongitudeOfAscendingNode,
+    //       currentArgumentOfLatitude,
+    //       myLocation1);
+    //   //final currentPosition = LatLng(currentLatitude, currentLongitude);
 
-      // Store or output the calculated position and other information
-      final currentHeight = intialHeight;
-      final currentAzimuth = initialAzimuth;
-      final currentElevation = initialElevation;
-      final currentRange = initialRange;
+    //   // Store or output the calculated position and other information
+    //   final currentHeight = intialHeight;
+    //   final currentAzimuth = initialAzimuth;
+    //   final currentElevation = initialElevation;
+    //   final currentRange = initialRange;
 
-      positions.add(CustomLatLng(currentLatitude, currentLongitude));
-      //positions.add(LatLng(currentLatitude, currentLongitude));
+    //   positions.add(CustomLatLng(currentLatitude, currentLongitude));
+    //   //positions.add(LatLng(currentLatitude, currentLongitude));
 
-      if (kDebugMode) {
-        print(
-            'Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
-      }
-    }
-    var outputList = positions.map((customLatLng) {
-      //Remove word latitude: and also longitude:
-      var lat = customLatLng.latitude;
-      print("Lat type ${lat.runtimeType}\n");
-      print(lat);
-      return LatLng(customLatLng.latitude, customLatLng.longitude);
-    }).toList();
+    //   if (kDebugMode) {
+    //     print(
+    //         'Position ${minute + 1}: ${positions[minute].latitude}, ${positions[minute].longitude}');
+    //   }
+    // }
+    // var outputList = positions.map((customLatLng) {
+    //   //Remove word latitude: and also longitude:
+    //   var lat = customLatLng.latitude;
+    //   print("Lat type ${lat.runtimeType}\n");
+    //   print(lat);
+    //   return LatLng(customLatLng.latitude, customLatLng.longitude);
+    // }).toList();
 
-    print(outputList);
+    print("NEW LAT LONG >< $newLatLong");
 
-    return outputList;
+    return newLatLong;
   }
 
   double calculateEccentricAnomaly(
