@@ -2,11 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sat_tracker/presentation/screens/plottingScreen.dart';
+import '../../constants.dart';
 import '../../data/dataproviders/loaddata.dart';
 import '../../data/models/satellite.dart';
 import '../../data/models/satellite_model.dart';
+import 'package:sat_tracker/globals.dart' as globals;
 
 class SearchScreen extends StatefulWidget {
+  static String routeName = "/search_screen";
   List<String> satelliteNames;
 
   SearchScreen({
@@ -19,6 +22,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  List<LatLng> result = [];
   TrackSatellite trackSatellite = TrackSatellite();
   double _loadingProgress = 0.0;
   late String _searchQuery = '';
@@ -27,6 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    globals.positions.clear();
     processSatellites();
   }
 
@@ -48,23 +53,25 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _selectSatellite(SatelliteData satellite) async {
-    List<LatLng> result = await trackSatellite.calculatePositions(
+    result = await trackSatellite.calculatePositions(
       satellite.TLE_LINE0!,
       satellite.TLE_LINE1!,
       satellite.TLE_LINE2!,
     );
+    globals.positions = result.toList();
     print("sat positions $result");
 
     if (result.isNotEmpty) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MapScreen(
-            title: 'Map Screen',
-            positions: result,
-          ),
-        ),
-      );
+      globals.positions = result;
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => MapScreen(
+      //       title: 'Map Screen',
+      //       positions: result,
+      //     ),
+      //   ),
+      // );
     } else {
       showDialog(
         context: context,
@@ -103,40 +110,75 @@ class _SearchScreenState extends State<SearchScreen> {
           .toList();
       return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: const Text('Search Satellites'),
           ),
           body: Column(
             children: [
-              Row(children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      hintText: 'Search satellites...',
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value.toLowerCase();
-                      });
-                    },
-                  ),
-                ),
-                IconButton(icon: const Icon(Icons.search), onPressed: () {})
-              ]),
+              // Row(children: [
+              //   Expanded(
+              //     child: TextField(
+              //       decoration: const InputDecoration(
+              //         hintText: 'Search satellites...',
+              //       ),
+              //       onChanged: (value) {
+              //         setState(() {
+              //           _searchQuery = value.toLowerCase();
+              //         });
+              //       },
+              //     ),
+              //   ),
+              //   IconButton(icon: const Icon(Icons.search), onPressed: () {})
+              // ]),
               Expanded(
-                  child: ListView.builder(
-                itemCount: filteredSatellites.length,
-                itemBuilder: (context, index) {
-                  final satelliteName = filteredSatellites[index];
-                  final satellite = _satelliteList.firstWhere(
-                      (satellite) => satellite.TLE_LINE0 == satelliteName);
-                  return ListTile(
-                    title: Text(satelliteName),
-                    onTap: () {
-                      _selectSatellite(satellite);
-                    },
-                  );
-                },
-              ))
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: filteredSatellites.length,
+                  itemBuilder: (context, i) {
+                    // dismissLoader();
+                    return MenuLineSimpleWithArgs(
+                        title: filteredSatellites[i].startsWith("0")
+                            ? filteredSatellites[i].substring(1)
+                            : filteredSatellites[i],
+                        routeName: MapScreen.routeName,
+                        args: {
+                          "name": filteredSatellites[i],
+                          "positions": result.toString(),
+                          "secondLineElement": "val2"
+                        },
+                        callback: () {
+                          globals.satelliteName =
+                              filteredSatellites[i].startsWith("0")
+                                  ? filteredSatellites[i].substring(1)
+                                  : filteredSatellites[i];
+                          final satelliteName = filteredSatellites[i];
+                          final satellite = _satelliteList.firstWhere(
+                              (satellite) =>
+                                  satellite.TLE_LINE0 == satelliteName);
+                          _selectSatellite(satellite);
+
+                          // globals.secondLineElement.add("value");
+                          // globals.secondLineElement.add("value");
+                          return true;
+                        });
+                  },
+                ),
+              ),
+              // Expanded(
+              //     child: ListView.builder(
+              //   itemCount: filteredSatellites.length,
+              //   itemBuilder: (context, index) {
+              //     final satelliteName = filteredSatellites[index];
+              //     final satellite = _satelliteList.firstWhere(
+              //         (satellite) => satellite.TLE_LINE0 == satelliteName);
+              //     return ListTile(
+              //       title: Text(satelliteName),
+              //       onTap: () {
+              //         _selectSatellite(satellite);
+              //       },
+              //     );
+              //   },
+              // )),
             ],
           ));
     }

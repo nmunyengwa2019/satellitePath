@@ -4,6 +4,8 @@ import 'package:open_app_settings/open_app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'sat_router.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -11,6 +13,10 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  static final _navigatorKey = GlobalKey<NavigatorState>();
+  NavigatorState get _navigator => _navigatorKey.currentState!;
+
+  static String routeName = "/home";
   const MyApp({
     Key? key,
   }) : super(key: key);
@@ -53,6 +59,9 @@ class _MyAppState extends State<MyApp> {
     if (!_permissionsGranted) {
       if (!_permissionsRequested) {
         return MaterialApp(
+          initialRoute: DownloadScreen.routeName,
+          routes: SateliteRouter.routes,
+          // debugShowCheckedModeBanner: false,
           debugShowCheckedModeBanner: false,
           home: Scaffold(
             backgroundColor: Colors.blue,
@@ -79,6 +88,8 @@ class _MyAppState extends State<MyApp> {
         );
       } else {
         return MaterialApp(
+          initialRoute: DownloadScreen.routeName,
+          routes: SateliteRouter.routes,
           home: Scaffold(
             backgroundColor: Colors.blue,
             body: Center(
@@ -106,6 +117,8 @@ class _MyAppState extends State<MyApp> {
       }
     } else {
       return MaterialApp(
+          initialRoute: DownloadScreen.routeName,
+          routes: SateliteRouter.routes,
           title: 'Satellite Tracker',
           theme: ThemeData(
             primarySwatch: Colors.blue,

@@ -3,8 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:sat_tracker/globals.dart' as globals;
 
 class MapScreen extends StatefulWidget {
+  static String routeName = "/plotting_screen";
   final String title;
   final List<LatLng> positions;
 
@@ -16,14 +18,12 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  List<LatLng> finalLatLong = [
-    LatLng(38.73, -9.14),
-    LatLng(51.50, -0.12),
-    LatLng(52.37, 4.90)
-  ];
+  List<LatLng> finalLatLong = globals.positions.toList();
+  // List<LatLng>
+
   List<Marker> _markers = [];
   void setMarkers() async {
-    List<Marker> markers = widget.positions.map((n) {
+    List<Marker> markers = globals.positions.map((n) {
       LatLng point = LatLng(n.latitude, n.longitude);
 
       return Marker(
@@ -38,7 +38,7 @@ class _MapScreenState extends State<MapScreen> {
       );
     }).toList();
 
-    print("Markers >>> $markers");
+    print("FINAL LATLONG >>> $finalLatLong");
 
     setState(() {
       _markers.clear();
@@ -48,6 +48,10 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
+    print(">>>>Globals values>>>");
+
+    print(globals.positions);
+    print(">>>>Done printing>>>");
     // TODO: implement initState
     super.initState();
     setMarkers();
@@ -58,7 +62,7 @@ class _MapScreenState extends State<MapScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Test View'),
+        title: Text(globals.satelliteName),
       ),
       body: FlutterMap(
         options: MapOptions(
