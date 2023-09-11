@@ -117,6 +117,7 @@ class _MyAppState extends State<MyApp> {
       }
     } else {
       return MaterialApp(
+          debugShowCheckedModeBanner: false,
           initialRoute: DownloadScreen.routeName,
           routes: SateliteRouter.routes,
           title: 'Satellite Tracker',
