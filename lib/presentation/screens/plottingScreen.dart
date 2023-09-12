@@ -78,15 +78,16 @@ class _MapScreenState extends State<MapScreen> {
           PolylineLayerOptions(
             polylines: [
               Polyline(
-                isDotted: true,
+                isDotted: false,
                 strokeCap: StrokeCap.round,
+                strokeJoin: StrokeJoin.round,
                 points: finalLatLong,
                 color: Color.fromARGB(255, 243, 82, 33),
-                strokeWidth: 5,
+                strokeWidth: 3,
               ),
             ],
           ),
-          MarkerLayerOptions(markers: _markers),
+          // MarkerLayerOptions(markers: _markers),
         ],
       ),
     );
