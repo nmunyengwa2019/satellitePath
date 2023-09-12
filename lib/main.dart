@@ -4,6 +4,7 @@ import 'package:open_app_settings/open_app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'landing_page.dart';
 import 'sat_router.dart';
 
 void main() async {
@@ -59,7 +60,7 @@ class _MyAppState extends State<MyApp> {
     if (!_permissionsGranted) {
       if (!_permissionsRequested) {
         return MaterialApp(
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: LandingPage.routeName,
           routes: SateliteRouter.routes,
           // debugShowCheckedModeBanner: false,
           debugShowCheckedModeBanner: false,
@@ -88,7 +89,7 @@ class _MyAppState extends State<MyApp> {
         );
       } else {
         return MaterialApp(
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: LandingPage.routeName,
           routes: SateliteRouter.routes,
           home: Scaffold(
             backgroundColor: Colors.blue,
@@ -118,13 +119,13 @@ class _MyAppState extends State<MyApp> {
     } else {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: LandingPage.routeName,
           routes: SateliteRouter.routes,
           title: 'Satellite Tracker',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const DownloadScreen());
+          home: const LandingPage());
     }
   }
 }

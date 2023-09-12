@@ -7,7 +7,7 @@ import 'package:sat_tracker/globals.dart' as globals;
 
 class TrackSatellite {
   Future<List<LatLng>> calculatePositions(
-      String name, String tleLine1, String tleLine2) async {
+      String name, String line1, String line2) async {
     globals.positions.clear();
     // globals.latitudes.clear();
     // globals.longitudes.clear();
@@ -24,11 +24,11 @@ class TrackSatellite {
     // const String line2 =
     //     "2 25544  51.6453  57.0843 0001671  64.9808  73.0513 15.49338189252428";
 
-    const String name = "FENGYUN 1C DEB";
-    const String line1 =
-        "1 29733U 99025X   21080.32325869  .00000063  00000-0  17212-3 0  9993";
-    const String line2 =
-        "2 29733  99.2303  24.6693 0578834 210.4520 307.7773 12.92087092667824";
+    // const String name = "FENGYUN 1C DEB";
+    // const String line1 =
+    //     "1 29733U 99025X   21080.32325869  .00000063  00000-0  17212-3 0  9993";
+    // const String line2 =
+    //     "2 29733  99.2303  24.6693 0578834 210.4520 307.7773 12.92087092667824";
 
     /// Get the current date and time
     final dateTime = DateTime.now();
@@ -43,6 +43,7 @@ class TrackSatellite {
     ///Create a orbit object and print if is
     ///SGP4, for "near-Earth" objects, or SDP4 for "deep space" objects.
     final Orbit orbit = new Orbit(tleSGP4);
+    print("Orbit period >>${orbit.period()}");
     print("is SGP4: ${orbit.period() < 255 * 60}");
 
     /// get the utc time in Julian Day
@@ -59,6 +60,8 @@ class TrackSatellite {
       // Calculate positions for 100 time points
       // final position = satellite.getPosition(now.add(Duration(minutes: i * 10)));
 
+      Duration timeLapse = Duration(minutes: (i * 10));
+      print(" Time lapse $timeLapse");
       final Eci eciPos = orbit.getPosition(
           ((utcTime + (i * 10)) - orbit.epoch().getDate()) * MIN_PER_DAY);
       // globals.positions.add(eciPos);
@@ -79,7 +82,7 @@ class TrackSatellite {
         -82.3583297729492, 59 / 1000.0); // TODO my location replace
     CoordGeo myLocation1 =
         CoordGeo(lat: 23.1359405517578, lon: -82.3583297729492, alt: 0.0);
-    final TLE tle = TLE(name, tleLine1, tleLine2);
+    final TLE tle = TLE(name, line1, line1);
     // final orbit = Orbit(tle);
     final now = DateTime.now();
     final positions = <CustomLatLng>[];

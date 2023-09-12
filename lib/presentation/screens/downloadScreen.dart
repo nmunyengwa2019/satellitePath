@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sat_tracker/constants.dart';
 import 'package:sat_tracker/presentation/screens/search_screen.dart';
 import '../../data/dataproviders/download_data.dart';
 import '../../data/dataproviders/loaddata.dart';
-
+import 'package:sat_tracker/globals.dart' as globals;
 
 class DownloadScreen extends StatefulWidget {
   static String routeName = "/download_screen";
@@ -64,40 +65,41 @@ class _DownloadScreenState extends State<DownloadScreen> {
     });
 
     try {
-        await _apiClient.downloadSatellites((progress) {
-          setState(() {
-            _progress = progress;
-          });
-        });
-
+      await _apiClient.downloadSatellites((progress) {
         setState(() {
-          _downloading = false;
-          _progress = 1;
-          _status = 'Download complete!';
+          _progress = progress;
         });
+      });
 
-        satelliteNames = await loadData.loadSatelliteNames();
+      setState(() {
+        _downloading = false;
+        _progress = 1;
+        _status = 'Download complete!';
+      });
 
-        if (satelliteNames != null && satelliteNames!.isNotEmpty) {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) =>
-                SearchScreen(satelliteNames: satelliteNames!)),
-                (Route<dynamic> route) => false,
-          );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Satellite data downloaded successfully'),
-            ),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('No Satellite names found'),
-            ),
-          );
-        }
-      } on Exception catch (e) {
+      satelliteNames = await loadData.loadSatelliteNames();
+
+      if (satelliteNames != null && satelliteNames!.isNotEmpty) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  SearchScreen(satelliteNames: satelliteNames!)),
+          (Route<dynamic> route) => false,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Satellite data downloaded successfully'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No Satellite names found'),
+          ),
+        );
+      }
+    } on Exception catch (e) {
       setState(() {
         _downloading = false;
         _status = 'Download failed: ${e.toString()}';
@@ -108,13 +110,13 @@ class _DownloadScreenState extends State<DownloadScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Download Progress'),
-      ),
-      body: Center(
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
+            StyleAppBar(
+                title: globals.isIrridium
+                    ? "Irridium Satellites"
+                    : globals.satelliteGroupNames[globals.selectedGroupIndex]),
             if (_downloading)
               LinearProgressIndicator(
                 value: _progress,

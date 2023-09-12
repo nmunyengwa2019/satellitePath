@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'colors.dart';
+import 'size_config.dart';
 
 typedef MyCallback = bool Function();
 
@@ -47,6 +48,72 @@ class MenuLineSimpleWithArgs extends StatelessWidget {
             )),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class StyleAppBar extends StatelessWidget {
+  final String title;
+
+  // final bool ? navToCategories;
+  const StyleAppBar({
+    required this.title,
+
+    // ,this.navToCategories = false,
+  }) : super();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 60,
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        //color: kPrimaryColor,
+        color: kPrimaryColor,
+        borderRadius: new BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Column(
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20),
+                  child: Image.asset(
+                    'assets/icons/left-arrow.png',
+                    width: getProportionateScreenWidth(35),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500),
+                ),
+              )),
+              SizedBox(
+                width: 60,
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

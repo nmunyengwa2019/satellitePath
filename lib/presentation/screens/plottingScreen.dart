@@ -5,6 +5,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sat_tracker/globals.dart' as globals;
 
+import '../../constants.dart';
+
 class MapScreen extends StatefulWidget {
   static String routeName = "/plotting_screen";
   final String title;
@@ -64,31 +66,40 @@ class _MapScreenState extends State<MapScreen> {
         centerTitle: true,
         title: Text(globals.satelliteName),
       ),
-      body: FlutterMap(
-        options: MapOptions(
-          center: finalLatLong.first,
-          zoom: 3.0,
-        ),
-        layers: [
-          TileLayerOptions(
-            urlTemplate:
-                'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
-            userAgentPackageName: 'com.example.app',
-          ),
-          PolylineLayerOptions(
-            polylines: [
-              Polyline(
-                isDotted: false,
-                strokeCap: StrokeCap.round,
-                strokeJoin: StrokeJoin.round,
-                points: finalLatLong,
-                color: Color.fromARGB(255, 243, 82, 33),
-                strokeWidth: 3,
+      body: SafeArea(
+        child: Column(
+          children: [
+             StyleAppBar(
+              title: globals.satelliteName,
+            ),
+            FlutterMap(
+              options: MapOptions(
+                center: finalLatLong.first,
+                zoom: 3.0,
               ),
-            ],
-          ),
-          // MarkerLayerOptions(markers: _markers),
-        ],
+              layers: [
+                TileLayerOptions(
+                  urlTemplate:
+                      'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
+                  userAgentPackageName: 'com.example.app',
+                ),
+                PolylineLayerOptions(
+                  polylines: [
+                    Polyline(
+                      isDotted: false,
+                      strokeCap: StrokeCap.round,
+                      strokeJoin: StrokeJoin.round,
+                      points: finalLatLong,
+                      color: Color.fromARGB(255, 243, 82, 33),
+                      strokeWidth: 3,
+                    ),
+                  ],
+                ),
+                MarkerLayerOptions(markers: _markers),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

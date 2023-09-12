@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:sat_tracker/globals.dart' as globals;
 
 import '../models/satellite_model.dart';
+import 'package:sat_tracker/globals.dart' as globals;
 
 class ApiClient {
   const ApiClient();
@@ -15,7 +17,7 @@ class ApiClient {
   static const String _authPath = "/ajaxauth/login";
   static const String _userName = "poso.draxy@gmail.com";
   static const String _password = "9kj39-Btb8xUB58";
-  static const String _query = "/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/Iridium/format/json";
+  static  final String _query = globals.isIrridium?"/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/Iridium/format/json":'/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/NORAD_CAT_ID/${globals.minCatId}--${globals.maxCatId}/orderby/NORAD_CAT_ID/format/3le';
   static const String _cookie = 'chocolatechip=inkbbp1d328teh7dpfic57nth12tbefq';
 
 
