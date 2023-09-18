@@ -58,11 +58,11 @@ class _SearchScreenState extends State<SearchScreen> {
       satellite.TLE_LINE1!,
       satellite.TLE_LINE2!,
     );
-    globals.positions = result.toList();
-    print("sat positions $result");
+    globals.positions = [...result];
+    // print("sat positions $result");
 
     if (result.isNotEmpty) {
-      globals.positions = result;
+      globals.positions = [...result];
       // Navigator.push(
       //   context,
       //   MaterialPageRoute(
@@ -162,7 +162,6 @@ class _SearchScreenState extends State<SearchScreen> {
                             (satellite) =>
                                 satellite.TLE_LINE0 == satelliteName);
                         _selectSatellite(satellite);
-
                         // globals.secondLineElement.add("value");
                         // globals.secondLineElement.add("value");
                         return true;

@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
     if (!_permissionsGranted) {
       if (!_permissionsRequested) {
         return MaterialApp(
-          initialRoute: LandingPage.routeName,
+          initialRoute: DownloadScreen.routeName,
           routes: SateliteRouter.routes,
           // debugShowCheckedModeBanner: false,
           debugShowCheckedModeBanner: false,
@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
         );
       } else {
         return MaterialApp(
-          initialRoute: LandingPage.routeName,
+          initialRoute: DownloadScreen.routeName,
           routes: SateliteRouter.routes,
           home: Scaffold(
             backgroundColor: Colors.blue,
@@ -119,13 +119,13 @@ class _MyAppState extends State<MyApp> {
     } else {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-          initialRoute: LandingPage.routeName,
+          initialRoute: DownloadScreen.routeName,
           routes: SateliteRouter.routes,
           title: 'Satellite Tracker',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const LandingPage());
+          home: const DownloadScreen());
     }
   }
 }

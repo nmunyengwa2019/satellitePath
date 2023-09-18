@@ -20,7 +20,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  List<LatLng> finalLatLong = globals.positions.toList();
+  List<LatLng> finalLatLong = [...globals.positions];
   // List<LatLng>
 
   List<Marker> _markers = [];
@@ -40,7 +40,7 @@ class _MapScreenState extends State<MapScreen> {
       );
     }).toList();
 
-    print("FINAL LATLONG >>> $finalLatLong");
+    print("FINAL LATLONG >>> $finalLatLong ");
 
     setState(() {
       _markers.clear();
@@ -51,7 +51,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     print(">>>>Globals values>>>");
-
+    // finalLatLong.remove(finalLatLong.last);
     print(globals.positions);
     print(">>>>Done printing>>>");
     // TODO: implement initState
@@ -62,14 +62,10 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(globals.satelliteName),
-      ),
       body: SafeArea(
         child: Column(
           children: [
-             StyleAppBar(
+            StyleAppBar(
               title: globals.satelliteName,
             ),
             FlutterMap(
