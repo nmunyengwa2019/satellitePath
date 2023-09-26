@@ -59,19 +59,9 @@ class _SearchScreenState extends State<SearchScreen> {
       satellite.TLE_LINE2!,
     );
     globals.positions = [...result];
-    // print("sat positions $result");
 
     if (result.isNotEmpty) {
       globals.positions = [...result];
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => MapScreen(
-      //       title: 'Map Screen',
-      //       positions: result,
-      //     ),
-      //   ),
-      // );
     } else {
       showDialog(
         context: context,
@@ -109,10 +99,6 @@ class _SearchScreenState extends State<SearchScreen> {
               satelliteName.toLowerCase().contains(_searchQuery.toLowerCase()))
           .toList();
       return Scaffold(
-          // appBar: AppBar(
-          //   centerTitle: true,
-          //   title: const Text('Search Satellites'),
-          // ),
           body: SafeArea(
         child: Column(
           children: [
@@ -121,21 +107,6 @@ class _SearchScreenState extends State<SearchScreen> {
                     ? "Irridium Satellites"
                     : globals.satelliteGroupNames[globals.selectedGroupIndex] +
                         " Satellites"),
-            // Row(children: [
-            //   Expanded(
-            //     child: TextField(
-            //       decoration: const InputDecoration(
-            //         hintText: 'Search satellites...',
-            //       ),
-            //       onChanged: (value) {
-            //         setState(() {
-            //           _searchQuery = value.toLowerCase();
-            //         });
-            //       },
-            //     ),
-            //   ),
-            //   IconButton(icon: const Icon(Icons.search), onPressed: () {})
-            // ]),
             Expanded(
               child: ListView.builder(
                 shrinkWrap: true,
@@ -148,11 +119,12 @@ class _SearchScreenState extends State<SearchScreen> {
                           : filteredSatellites[i],
                       routeName: MapScreen.routeName,
                       args: {
-                        "name": filteredSatellites[i],
-                        "positions": result.toString(),
-                        "secondLineElement": "val2"
+                        // "name": filteredSatellites[i],
+                        // "positions": result.toString(),
+                        // "secondLineElement": "val2"
                       },
                       callback: () {
+                        print("...RRRRRRRRRRRRRR...");
                         globals.satelliteName =
                             filteredSatellites[i].startsWith("0")
                                 ? filteredSatellites[i].substring(1)
@@ -162,28 +134,12 @@ class _SearchScreenState extends State<SearchScreen> {
                             (satellite) =>
                                 satellite.TLE_LINE0 == satelliteName);
                         _selectSatellite(satellite);
-                        // globals.secondLineElement.add("value");
-                        // globals.secondLineElement.add("value");
+                        print("...RRRRRRRRRRRRRR...");
                         return true;
                       });
                 },
               ),
             ),
-            // Expanded(
-            //     child: ListView.builder(
-            //   itemCount: filteredSatellites.length,
-            //   itemBuilder: (context, index) {
-            //     final satelliteName = filteredSatellites[index];
-            //     final satellite = _satelliteList.firstWhere(
-            //         (satellite) => satellite.TLE_LINE0 == satelliteName);
-            //     return ListTile(
-            //       title: Text(satelliteName),
-            //       onTap: () {
-            //         _selectSatellite(satellite);
-            //       },
-            //     );
-            //   },
-            // )),
           ],
         ),
       ));

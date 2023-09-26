@@ -21,43 +21,47 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   List<LatLng> finalLatLong = [...globals.positions];
+  // List<LatLng> finalLatLong = [...globals.satellitePath];
   // List<LatLng>
 
   List<Marker> _markers = [];
-  void setMarkers() async {
-    List<Marker> markers = globals.positions.map((n) {
-      LatLng point = LatLng(n.latitude, n.longitude);
+  // void setMarkers() async {
+  //   List<Marker> markers = globals.positions.map((n) {
 
-      return Marker(
-        width: 80.0,
-        height: 80.0,
-        point: point,
-        builder: (context) => Icon(
-          Icons.location_on,
-          color: Color.fromARGB(255, 238, 40, 5),
-          size: 30,
-        ),
-      );
-    }).toList();
+  //     // if (n.latitude.isFinite && n.longitude.isFinite) {
+  //       LatLng point = LatLng(n.latitude, n.longitude);
 
-    print("FINAL LATLONG >>> $finalLatLong ");
+  //     return Marker(
+  //       width: 80.0,
+  //       height: 80.0,
+  //       point: point,
+  //       builder: (context) => Icon(
+  //         Icons.location_on,
+  //         color: Color.fromARGB(255, 238, 40, 5),
+  //         size: 30,
+  //       ),
+  //     );
+  //   }).toList();
 
-    setState(() {
-      _markers.clear();
-      _markers = markers;
-    });
-  }
+  //   print("FINAL LATLONG >>> $finalLatLong ");
 
-  @override
-  void initState() {
-    print(">>>>Globals values>>>");
-    // finalLatLong.remove(finalLatLong.last);
-    print(globals.positions);
-    print(">>>>Done printing>>>");
-    // TODO: implement initState
-    super.initState();
-    setMarkers();
-  }
+  //   setState(() {
+  //     _markers.clear();
+  //     _markers = markers;
+  //   });
+  // }
+
+  // @override
+  // void initState() {
+  //   print(">>>>Globals values>>>");
+  //   print(finalLatLong.first);
+  //   // finalLatLong.remove(finalLatLong.last);
+  //   print(globals.positions);
+  //   print(">>>>Done printing>>>");
+  //   // TODO: implement initState
+  //   super.initState();
+  //   // setMarkers();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -68,31 +72,35 @@ class _MapScreenState extends State<MapScreen> {
             StyleAppBar(
               title: globals.satelliteName,
             ),
-            FlutterMap(
-              options: MapOptions(
-                center: finalLatLong.first,
-                zoom: 3.0,
+            Flexible(
+              child: FlutterMap(
+                options: MapOptions(
+                  center: finalLatLong.isNotEmpty
+                      ? finalLatLong.first
+                      : LatLng(0, 0),
+                  zoom: 3.0,
+                ),
+                layers: [
+                  TileLayerOptions(
+                    urlTemplate:
+                        'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
+                    userAgentPackageName: 'com.example.app',
+                  ),
+                  PolylineLayerOptions(
+                    polylines: [
+                      Polyline(
+                        isDotted: false,
+                        strokeCap: StrokeCap.round,
+                        strokeJoin: StrokeJoin.round,
+                        points: finalLatLong,
+                        color: Color.fromARGB(255, 243, 82, 33),
+                        strokeWidth: 3,
+                      ),
+                    ],
+                  ),
+                  // MarkerLayerOptions(markers: _markers),
+                ],
               ),
-              layers: [
-                TileLayerOptions(
-                  urlTemplate:
-                      'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
-                  userAgentPackageName: 'com.example.app',
-                ),
-                PolylineLayerOptions(
-                  polylines: [
-                    Polyline(
-                      isDotted: false,
-                      strokeCap: StrokeCap.round,
-                      strokeJoin: StrokeJoin.round,
-                      points: finalLatLong,
-                      color: Color.fromARGB(255, 243, 82, 33),
-                      strokeWidth: 3,
-                    ),
-                  ],
-                ),
-                MarkerLayerOptions(markers: _markers),
-              ],
             ),
           ],
         ),
