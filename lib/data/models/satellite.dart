@@ -14,24 +14,25 @@ class TrackSatellite {
 
     //................Fix time issues............
 
-    final datetimeStart = DateTime(2022, 09, 25, 12, 0, 0);
+    final datetimeStart = DateTime.now();
     final datetimeList = [];
 
     DateTime x = datetimeStart;
 
     datetimeList.add(
         Julian.fromFullDate(x.year, x.month, x.day, x.hour, x.minute)
-                .getDate() +
-            4 / 24.0);
+            .getDate());
 
     const dayTMins = 1440;
     const hoursPerWeek = 168;
 
-    for (int i = 1; i < 7; i++) {
-      x = x.add(const Duration(days: 1));
+    for (int i = 1; i < hoursPerWeek; i++) {
+      x = x.add(const Duration(hours: 4));
+
       final y = Julian.fromFullDate(x.year, x.month, x.day, x.hour, x.minute)
               .getDate() +
-          4 / 24.0;
+          5 / 24.0;
+
       datetimeList.add(y);
     }
     print(" DateTime ${datetimeList.toList()}");

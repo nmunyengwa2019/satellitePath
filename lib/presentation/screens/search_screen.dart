@@ -58,6 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
       satellite.TLE_LINE1!,
       satellite.TLE_LINE2!,
     );
+    globals.positions.clear();
     globals.positions = [...result];
 
     if (result.isNotEmpty) {
