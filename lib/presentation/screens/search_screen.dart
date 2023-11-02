@@ -8,6 +8,7 @@ import '../../data/models/satellite.dart';
 import '../../data/models/satellite_model.dart';
 import 'package:sat_tracker/globals.dart' as globals;
 
+// ignore: must_be_immutable
 class SearchScreen extends StatefulWidget {
   static String routeName = "/search_screen";
   List<String> satelliteNames;
@@ -16,7 +17,6 @@ class SearchScreen extends StatefulWidget {
     Key? key,
     required this.satelliteNames,
   }) : super(key: key);
-
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -113,6 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 shrinkWrap: true,
                 itemCount: filteredSatellites.length,
                 itemBuilder: (context, i) {
+                  print("arrived");
                   // dismissLoader();
                   return MenuLineSimpleWithArgs(
                       title: filteredSatellites[i].startsWith("0")

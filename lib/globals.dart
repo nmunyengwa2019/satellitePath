@@ -3,8 +3,9 @@ import 'package:latlong2/latlong.dart';
 
 List<LatLng> positions = [];
 String satelliteName = "";
-
+String displayName = "";
 List<String> satelliteGroupNames = [
+  "Irridium",
   "Weather Satellites",
   "Radar Satellites",
   "Communication Satellite",
@@ -13,6 +14,7 @@ List<String> satelliteGroupNames = [
 ];
 
 List<String> satelliteGroupCatRange = [
+  "",
   "1000--1999",
   " 2000--2999",
   "3000--3999",

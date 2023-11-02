@@ -8,26 +8,23 @@ import 'package:sat_tracker/globals.dart' as globals;
 class TrackSatellite {
   Future<List<LatLng>> calculatePositions(
       String name, String line1, String line2) async {
-    print("DIE DUMB");
     print("Name $name Line 1$line1 Line 2 $line2");
     globals.positions.clear();
 
     //................Fix time issues............
 
-    final datetimeStart = DateTime.now();
     final datetimeList = [];
 
-    DateTime x = datetimeStart;
+    DateTime x = DateTime.now();
 
     datetimeList.add(
         Julian.fromFullDate(x.year, x.month, x.day, x.hour, x.minute)
             .getDate());
 
-    const dayTMins = 1440;
-    const hoursPerWeek = 168;
+    const daysInaWeek = 7;
 
-    for (int i = 1; i < hoursPerWeek; i++) {
-      x = x.add(const Duration(hours: 4));
+    for (int i = 1; i < daysInaWeek + 1; i++) {
+      x = x.add(const Duration(days: 1));
 
       final y = Julian.fromFullDate(x.year, x.month, x.day, x.hour, x.minute)
               .getDate() +
@@ -41,10 +38,10 @@ class TrackSatellite {
 
     /// Get the current date and time
     final dateTime = DateTime.now();
-    // final positions = <Eci>[];
+   
     List<LatLng> newLatLong = [];
-    final Site myLocation = Site.fromLatLngAlt(23.1359405517578,
-        -82.3583297729492, 59 / 1000.0); // TODO my location replace
+    final Site myLocation = Site.fromLatLngAlt(
+        -17.7806468, 31.0536992, 59 / 1000.0); // TODO my location replace
     CoordGeo myLocation1 =
         CoordGeo(lat: 23.1359405517578, lon: -82.3583297729492, alt: 0.0);
     final initialTime = Julian.fromFullDate(dateTime.year, dateTime.month,
@@ -62,12 +59,9 @@ class TrackSatellite {
     print("Orbit period >>${orbit.period()}");
     print("is SGP4: ${orbit.period() < 255 * 60}");
 
-    /// get the utc time in Julian Day
-    ///  + 4/24 need it, diferent time zone (Cuba -4 hrs )
-
+  
     final positions = <CustomLatLng>[];
-    // final Eci eciPos =
-    //     orbit.getPosition((utcTime - orbit.epoch().getDateR()) * MIN_PER_DAY);
+   
     int date_time_mins = 86400;
 
     for (int i = 0; i < datetimeList.length; i++) {
@@ -75,11 +69,12 @@ class TrackSatellite {
                   dateTime.day, dateTime.hour + i, dateTime.minute)
               .getDate() +
           4 / 24.0;
-      // print("EPO TIME ${orbit.epoch().getDate()}");
+      
+      
       final Eci eciPos = orbit.getPosition(
           (datetimeList[i] - orbit.epoch().getDate()) * HR_PER_DAY);
 
-      ///Get the current lat, ng of the satellite
+      
 
       final CoordGeo coord = eciPos.toGeo();
       if (coord.lon > PI) coord.lon -= TWOPI;
@@ -87,7 +82,7 @@ class TrackSatellite {
       var Latitude = rad2deg(coord.lat);
       var Longitude = rad2deg(coord.lon);
 
-      newLatLong.add(LatLng(Latitude, Longitude));
+      // newLatLong.add(LatLng(Latitude, Longitude));
 
       //....................................................................................
       final eccentricity = orbit.eccentricity();
@@ -116,22 +111,24 @@ class TrackSatellite {
           calculateArgumentOfLatitude(currentTrueAnomaly, argumentOfPerigee);
       final currentLongitudeOfAscendingNode =
           calculateLongitudeOfAscendingNode(raan);
+      CoordGeo myNewLocation1 =
+          CoordGeo(alt: intialHeight, lat: Latitude, lon: Longitude);
       final currentLongitude = calculateLongitude(currentArgumentOfLatitude,
-          currentLongitudeOfAscendingNode, myLocation1);
+          currentLongitudeOfAscendingNode, myNewLocation1);
       final currentLatitude = calculateLatitude(
           inclination,
           currentLongitudeOfAscendingNode,
           currentArgumentOfLatitude,
-          myLocation1);
+          myNewLocation1);
       final currentPosition = LatLng(currentLatitude, currentLongitude);
       // final currentPosition =
       //     LatLng(Latitude.roundToDouble(), Longitude.roundToDouble());
 
-      // newLatLong.add(currentPosition);
+      newLatLong.add(currentPosition);
       // print("NEW LAT LONG $i >< ${newLatLong}");
     }
 
-    print("NEW LAT LONG  >< ${newLatLong}");
+    print("NEW LAT LONG  >< $newLatLong");
     return newLatLong;
   }
 

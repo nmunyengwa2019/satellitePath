@@ -17,21 +17,21 @@ class ApiClient {
   static const String _authPath = "/ajaxauth/login";
   static const String _userName = "poso.draxy@gmail.com";
   static const String _password = "9kj39-Btb8xUB58";
-  static  final String _query = globals.isIrridium?"/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/Iridium/format/json":'/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/NORAD_CAT_ID/${globals.minCatId}--${globals.maxCatId}/orderby/NORAD_CAT_ID/format/3le';
-  static const String _cookie = 'chocolatechip=inkbbp1d328teh7dpfic57nth12tbefq';
-
+  static final String _query = globals.isIrridium
+      ? "/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/Iridium/format/json"
+      // : "/basicspacedata/query/class/gp/ORDERBY/EPOCH%20desc/favorites/GPS/format/json";
+   : '/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/NORAD_CAT_ID/${globals.minCatId}--${globals.maxCatId}/orderby/NORAD_CAT_ID/format/2le';
+  static const String _cookie =
+      'chocolatechip=inkbbp1d328teh7dpfic57nth12tbefq';
 
   Future<void> downloadSatellites(void Function(double) onProgress) async {
-    try
-    {
-      var headers =
-      {
+    try {
+      var headers = {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Cookie': _cookie
       };
 
-      var response = await http.post(
-          Uri.parse(_baseURL + _authPath),
+      var response = await http.post(Uri.parse(_baseURL + _authPath),
           headers: headers,
           body: {
             'identity': _userName,
@@ -44,29 +44,35 @@ class ApiClient {
 
         // Check if local storage permission is already granted
         var permissionStatus = await Permission.manageExternalStorage.status;
-        if (permissionStatus.isGranted)
-        {
+        if (permissionStatus.isGranted) {
           var directory = await getApplicationDocumentsDirectory();
           var filePath = '${directory.path}/satellites.json';
           var file = File(filePath);
           if (await file.exists()) await file.delete();
 
-          var jsonData = jsonDecode(utf8.decode(responseBody)); // Extract the required fields from the JSON response
-          var satellites = jsonData.map((e) => SatelliteData.fromJson({
-            'TLE_LINE0': e['TLE_LINE0'],
-            'TLE_LINE1': e['TLE_LINE1'],
-            'TLE_LINE2': e['TLE_LINE2']
-          })).toList();
+          var jsonData = jsonDecode(utf8.decode(
+              responseBody)); // Extract the required fields from the JSON response
+          var satellites = jsonData
+              .map((e) => SatelliteData.fromJson({
+                    'TLE_LINE0': e['TLE_LINE0'],
+                    'TLE_LINE1': e['TLE_LINE1'],
+                    'TLE_LINE2': e['TLE_LINE2']
+                  }))
+              .toList();
           var progress = 0.05;
-          file.writeAsString(jsonEncode(satellites)).asStream().listen((event)
-          {
-            onProgress(progress); // Report progress as the data is being written to the file
+          file.writeAsString(jsonEncode(satellites)).asStream().listen((event) {
+            onProgress(
+                progress); // Report progress as the data is being written to the file
             progress += 0.01; // Increase progress by 1% each time
           });
 
-          final prefs = await SharedPreferences.getInstance(); // Save the JSON data to shared preferences
+          final prefs = await SharedPreferences
+              .getInstance(); // Save the JSON data to shared preferences
           await prefs.setString('satellitesFilePath', filePath);
-          await prefs.setInt('lastUpdateTime', DateTime.now().millisecondsSinceEpoch); // Save timestamp to shared preferences
+          await prefs.setInt(
+              'lastUpdateTime',
+              DateTime.now()
+                  .millisecondsSinceEpoch); // Save timestamp to shared preferences
 
           if (kDebugMode) {
             print('Data saved to local storage');
@@ -74,37 +80,32 @@ class ApiClient {
         }
       } else {
         if (kDebugMode) {
-          print('Server response status code is not 200: ${response.statusCode}');
-          throw Exception('Server responded with status code ${response.statusCode}');
+          print(
+              'Server response status code is not 200: ${response.statusCode}');
+          throw Exception(
+              'Server responded with status code ${response.statusCode}');
         }
       }
 
 // Log out after completing the request
-      var logoutResponse = await http.get( Uri.parse(_baseURL + "/ajaxauth/logout"));
-      if (logoutResponse.statusCode == 200)
-      {
-        if (kDebugMode)
-        {
+      var logoutResponse =
+          await http.get(Uri.parse(_baseURL + "/ajaxauth/logout"));
+      if (logoutResponse.statusCode == 200) {
+        if (kDebugMode) {
           print('Logged out successfully');
         }
-      }
-      else {
+      } else {
         if (kDebugMode) {
           print(logoutResponse.reasonPhrase);
         }
       }
-    }
-    on SocketException catch (e)
-    {
+    } on SocketException catch (e) {
       throw Exception('Failed to connect to server: $e');
-    } on HttpException catch (e)
-    {
+    } on HttpException catch (e) {
       throw Exception('Failed to connect to server: $e');
-    } on FormatException catch (e)
-    {
+    } on FormatException catch (e) {
       throw Exception('Invalid server response: $e');
-    } catch (e)
-    {
+    } catch (e) {
       throw Exception('Failed to download satellites: $e');
     }
   }

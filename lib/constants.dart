@@ -3,11 +3,57 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'size_config.dart';
 
+final ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(25.0),
+    ),
+    backgroundColor: kPrimaryColor);
+
+class DefaultButton extends StatefulWidget {
+  const DefaultButton({
+    Key? key,
+    required this.text,
+    required this.press,
+  }) : super(key: key);
+  final String text;
+  final VoidCallback press;
+
+  @override
+  State<DefaultButton> createState() => _DefaultButtonState();
+}
+
+class _DefaultButtonState extends State<DefaultButton> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: SizedBox(
+        width: double.infinity,
+        // height: getProportionateScreenHeight(45),
+        height: 45,
+        child: ElevatedButton(
+          style: buttonStyle,
+          onPressed: () {
+            widget.press();
+          },
+          child: Text(
+            widget.text,
+            style: TextStyle(
+              // fontSize: getProportionateScreenWidth(18),
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 typedef MyCallback = bool Function();
 
 class MenuLineSimpleWithArgs extends StatelessWidget {
   final String title;
-  final routeName;
+  final String routeName;
   final Map<String, String> args;
   final MyCallback? callback;
 
@@ -41,7 +87,7 @@ class MenuLineSimpleWithArgs extends StatelessWidget {
                 child: Text(
               title,
               maxLines: 1,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 17,
                   color: kPrimaryColor,
                   fontWeight: FontWeight.w500),

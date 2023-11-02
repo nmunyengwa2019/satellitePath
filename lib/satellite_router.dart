@@ -1,36 +1,34 @@
 import 'package:fluro/fluro.dart';
 import 'package:fluro/fluro.dart' as fluro;
 import 'package:flutter/material.dart';
-import 'package:sat_tracker/presentation/screens/downloadScreen.dart';
+import 'package:sat_tracker/presentation/screens/plottingScreen.dart';
 import 'package:sat_tracker/satellite_groups.dart';
 // import 'package:sat_tracker/presentation/screens/groupNames.dart';
 
 import 'main.dart';
 
-// import 'presentation/screens/downloadScreen.dart';
-import 'presentation/screens/plottingScreen.dart';
+import 'presentation/screens/downloadScreen.dart';
 import 'presentation/screens/search_screen.dart';
+// import 'presentation/screens/groupNames.dart';
 
 //final sessionStateStream = StreamController<SessionState>();
 class SateliteRouter {
-  static const defaultPath = '/homepage';
+  static const defaultPath = '/homePage';
   //static fluro.Router router= fluro.Router();
   static final router = FluroRouter();
 
   //router = Router();
   static var routes = {
-    defaultPath: (context) => SatelliteGroups(),
+    defaultPath: (context) => const MyApp(),
+    MapScreen.routeName: (context) => const MapScreen(
+          title: '',
+          positions: [],
+        ),
+    DownloadScreen.routeName: (context) => DownloadScreen(),
+    SatelliteGroups.routeName: (context) => const SatelliteGroups(),
     SearchScreen.routeName: (context) => SearchScreen(
           satelliteNames: [],
         ),
-    
-    MapScreen.routeName: (context) =>  MapScreen(
-          positions: [],
-          title: '',
-        ),
-    SatelliteGroups.routeName: (context) =>  SatelliteGroups(),
-    DownloadScreen.routeName: (context) => DownloadScreen(),
-    SatelliteGroups.routeName: (context) => SatelliteGroups(),
   };
   static final List<Map> _routeDefinitionList = [
     {

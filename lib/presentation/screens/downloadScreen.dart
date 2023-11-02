@@ -23,6 +23,7 @@ class _DownloadScreenState extends State<DownloadScreen> {
   @override
   void initState() {
     super.initState();
+    print("arrived");
   }
 
   final ApiClient _apiClient = const ApiClient();
@@ -114,9 +115,8 @@ class _DownloadScreenState extends State<DownloadScreen> {
         child: Column(
           children: [
             StyleAppBar(
-                title: globals.isIrridium
-                    ? "Irridium Satellites"
-                    : globals.satelliteGroupNames[globals.selectedGroupIndex]),
+              title: globals.displayName,
+            ),
             if (_downloading)
               LinearProgressIndicator(
                 value: _progress,

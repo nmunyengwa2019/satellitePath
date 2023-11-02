@@ -21,47 +21,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   List<LatLng> finalLatLong = [...globals.positions];
-  // List<LatLng> finalLatLong = [...globals.satellitePath];
-  // List<LatLng>
 
   List<Marker> _markers = [];
-  // void setMarkers() async {
-  //   List<Marker> markers = globals.positions.map((n) {
-
-  //     // if (n.latitude.isFinite && n.longitude.isFinite) {
-  //       LatLng point = LatLng(n.latitude, n.longitude);
-
-  //     return Marker(
-  //       width: 80.0,
-  //       height: 80.0,
-  //       point: point,
-  //       builder: (context) => Icon(
-  //         Icons.location_on,
-  //         color: Color.fromARGB(255, 238, 40, 5),
-  //         size: 30,
-  //       ),
-  //     );
-  //   }).toList();
-
-  //   print("FINAL LATLONG >>> $finalLatLong ");
-
-  //   setState(() {
-  //     _markers.clear();
-  //     _markers = markers;
-  //   });
-  // }
-
-  // @override
-  // void initState() {
-  //   print(">>>>Globals values>>>");
-  //   print(finalLatLong.first);
-  //   // finalLatLong.remove(finalLatLong.last);
-  //   print(globals.positions);
-  //   print(">>>>Done printing>>>");
-  //   // TODO: implement initState
-  //   super.initState();
-  //   // setMarkers();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +31,7 @@ class _MapScreenState extends State<MapScreen> {
         child: Column(
           children: [
             StyleAppBar(
-              title: globals.satelliteName,
+              title: globals.displayName,
             ),
             Flexible(
               child: FlutterMap(
@@ -98,7 +59,7 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ],
                   ),
-                  // MarkerLayerOptions(markers: _markers),
+                  MarkerLayerOptions(markers: _markers),
                 ],
               ),
             ),

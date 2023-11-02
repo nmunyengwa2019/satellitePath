@@ -3,21 +3,23 @@ import 'package:sat_tracker/presentation/screens/downloadScreen.dart';
 import 'package:open_app_settings/open_app_settings.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:sat_tracker/satellite_groups.dart';
 
 import 'landing_page.dart';
-import 'sat_router.dart';
+// import 'sat_router.dart';
+import 'satellite_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatefulWidget {
   static final _navigatorKey = GlobalKey<NavigatorState>();
   NavigatorState get _navigator => _navigatorKey.currentState!;
 
-  static String routeName = "/home";
+  // static String routeName = "/home";
   const MyApp({
     Key? key,
   }) : super(key: key);
@@ -60,8 +62,16 @@ class _MyAppState extends State<MyApp> {
     if (!_permissionsGranted) {
       if (!_permissionsRequested) {
         return MaterialApp(
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: SatelliteGroups.routeName,
           routes: SateliteRouter.routes,
+          onUnknownRoute: (RouteSettings routeSettings) {
+            var page = const SatelliteGroups();
+            return MaterialPageRoute(builder: (context) => page);
+          },
+          //   unUnknownRoute: (RouteSettings routeSettings) {
+          //   var page = TestScreen();
+          //   return MaterialPageRoute(builder: (context) => page);
+          // },
           // debugShowCheckedModeBanner: false,
           debugShowCheckedModeBanner: false,
           home: Scaffold(
@@ -89,7 +99,7 @@ class _MyAppState extends State<MyApp> {
         );
       } else {
         return MaterialApp(
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: SatelliteGroups.routeName,
           routes: SateliteRouter.routes,
           home: Scaffold(
             backgroundColor: Colors.blue,
@@ -119,13 +129,13 @@ class _MyAppState extends State<MyApp> {
     } else {
       return MaterialApp(
           debugShowCheckedModeBanner: false,
-          initialRoute: DownloadScreen.routeName,
+          initialRoute: SatelliteGroups.routeName,
           routes: SateliteRouter.routes,
           title: 'Satellite Tracker',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const DownloadScreen());
+          home: SatelliteGroups());
     }
   }
 }
