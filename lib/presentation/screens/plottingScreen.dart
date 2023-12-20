@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:sat_tracker/globals.dart' as globals;
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 class MapScreen extends StatefulWidget {
   static String routeName = "/plotting_screen";
@@ -30,10 +31,26 @@ class _MapScreenState extends State<MapScreen> {
         width: 80.0,
         height: 80.0,
         point: point,
-        builder: (context) => Icon(
-          Icons.location_on,
-          color: Color.fromARGB(255, 238, 40, 5),
-          size: 30,
+        builder: (context) => GestureDetector(
+          onTap: () {
+            print("Location data $point \n");
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.infoReverse,
+              headerAnimationLoop: true,
+              animType: AnimType.bottomSlide,
+              title: 'INFO',
+              reverseBtnOrder: true,
+              btnOkOnPress: () {},
+              desc:
+                  'Latitude: ${point.latitude}\n Longitude: ${point.longitude}',
+            ).show();
+          },
+          child: Icon(
+            Icons.location_on,
+            color: Color.fromARGB(255, 238, 40, 5),
+            size: 30,
+          ),
         ),
       );
     }).toList();
@@ -71,18 +88,17 @@ class _MapScreenState extends State<MapScreen> {
         ),
         layers: [
           TileLayerOptions(
-            urlTemplate:
-                'https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg',
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.app',
           ),
           PolylineLayerOptions(
             polylines: [
               Polyline(
-                isDotted: true,
+                isDotted: false,
                 strokeCap: StrokeCap.round,
                 points: finalLatLong,
                 color: Color.fromARGB(255, 243, 82, 33),
-                strokeWidth: 5,
+                strokeWidth: 2,
               ),
             ],
           ),

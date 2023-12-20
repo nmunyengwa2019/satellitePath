@@ -52,15 +52,43 @@ class TrackSatellite {
             .getDate() +
         4 / 24.0;
 
+    // ..............for every minute every hour for one day.........
+    const double day_t_minutes = 1440;
+    double start_date =
+        Julian.fromFullDate(dateTime.year, dateTime.month, dateTime.day, 00, 00)
+            .getDate();
+    double end_date = Julian.fromFullDate(
+            dateTime.year, dateTime.month, dateTime.day + 1, 00, 00)
+        .getDate();
+    double date_count =
+        Julian.fromFullDate(dateTime.year, dateTime.month, dateTime.day, 00, 01)
+                .getDate() -
+            start_date;
     // final Eci eciPos =
     //     orbit.getPosition((utcTime - orbit.epoch().getDate()) * MIN_PER_DAY);
 
-    for (int i = 0; i < 100; i++) {
+    for (double i = 0; i < day_t_minutes; i++) {
+      print("count >>" + i.toString() + " \n");
+      print("count >>" + (i + date_count).toString() + " \n");
       // Calculate positions for 100 time points
       // final position = satellite.getPosition(now.add(Duration(minutes: i * 10)));
 
+      //increase hours and minutes
+      int incHour = 0;
+      int incMinutes = 0;
+      if (i / 60 >= 1) {
+        incHour = (i / 60).floor();
+      }
+      if (i % 60 != 0) {
+        incMinutes+30;
+      } else {
+        incMinutes = 0;
+      }
+      double calculated_date = Julian.fromFullDate(dateTime.year,
+              dateTime.month, dateTime.day, 00 + incHour, 00 + incMinutes)
+          .getDate();
       final Eci eciPos = orbit.getPosition(
-          ((utcTime + (i * 10)) - orbit.epoch().getDate()) * MIN_PER_DAY);
+          ((calculated_date) - orbit.epoch().getDate()) /** MIN_PER_DAY*/);
       // globals.positions.add(eciPos);
 
       ///Get the current lat, lng of the satellite
